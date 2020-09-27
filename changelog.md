@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 <br />
 
 ## Added
+- Testing file.
 - Transports:
 	- ConsoleTransports.js.
 	- Stream.js.
