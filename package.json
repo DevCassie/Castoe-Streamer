@@ -7,5 +7,9 @@
     "test": "echo Test script is working!"
   },
   "author": "Cas Martens",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+	"url": "https://github.com/DevCassie/Castoe-Logger",
+	"type": "public"
+  }
 }
