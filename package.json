@@ -1,0 +1,11 @@
+{
+  "name": "castoe-logger",
+  "version": "1.0.0",
+  "description": "A customizable logger for the Official Castoe Bot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo Test script is working!"
+  },
+  "author": "Cas Martens",
+  "license": "MIT"
+}
