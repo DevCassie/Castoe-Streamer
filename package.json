@@ -4,12 +4,20 @@
   "description": "A customizable logger for the Official Castoe Bot.",
   "main": "index.js",
   "scripts": {
-    "test": "echo Test script is working!"
+    "test": "echo Test script is working!",
+    "start": "node .",
+    "lint": "eslint ."
   },
   "author": "Cas Martens",
   "license": "MIT",
   "repository": {
-	"url": "https://github.com/DevCassie/Castoe-Logger",
-	"type": "public"
+    "url": "https://github.com/DevCassie/Castoe-Logger",
+    "type": "public"
+  },
+  "dependencies": {
+    "eslint": "^7.10.0",
+    "is-stream": "^2.0.0",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.0"
   }
 }
