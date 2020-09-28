@@ -1,7 +1,10 @@
 const Logger = require('./src/Transports/index.js');
+const fs = require('fs');
 
-const Console = new Logger.Console();
+const File = new Logger.Stream({
+	name: new Logger.File({
+		name: new fs.createWriteStream('./Testing.txt')
+	})
+});
 
-const array = ['Testing', 'Testin2', 'Testing3']
-
-Console.send(array);
+File.send('Testimng');

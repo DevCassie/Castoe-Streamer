@@ -18,4 +18,12 @@ Object.defineProperty(exports, 'Stream', {
 	get() {
 		return require('./stream');
 	}	
-})
+});
+
+Object.defineProperty(exports, 'File', {
+	configurable: true,
+	enumerable: true,
+	get() {
+		return require('./FileTransport');	
+	}
+});
