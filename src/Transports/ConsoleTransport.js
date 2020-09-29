@@ -1,4 +1,5 @@
 const os = require('os');
+const moment = require('moment');
 const { Transform } = require('stream'); 
 
 /**
@@ -16,6 +17,8 @@ module.exports = class CastoeConsole extends Transform {
 
 		// Expose the name of this Transport on the prototype
 		this.name = options.name || 'Castoe Console';
+		this.date = options.date;
+		this.showFile = options.showFile || false;
 		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
 		this.consoleWarnLevels = this._stringArrayToSet(options.consoleWarnLevels);
 		this.eol = options.eol || os.EOL;
@@ -33,9 +36,20 @@ module.exports = class CastoeConsole extends Transform {
 
 		if (this.stderrLevels[info]) {
 			if (process.stderr) {
-				process.stdout.write(`${info}${this.eol}`);
+				if (this.date) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
+				} else {
+					process.stdout.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				}
+	
+			
 			} else {
-				process.stderr.write(`${info}${this.eol}`);
+				if (this.date) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
+				} else {
+					process.stderr.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				}
+				
 			}
 
 			if (callback) {
@@ -44,9 +58,17 @@ module.exports = class CastoeConsole extends Transform {
 			return;
 		} else if (this.consoleWarnLevels[info]) {
 			if (process.stderr) {
-				process.stdout.write(`${info}${this.eol}`);
+				if (this.date) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
+				} else {
+					process.stdout.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				}
 			} else {
-				process.stderr.write(`${info}${this.eol}`);
+				if (this.date) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
+				} else {
+					process.stderr.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				}
 			}
 
 			if (callback) {
@@ -56,9 +78,18 @@ module.exports = class CastoeConsole extends Transform {
 		}
 
 		if (process.stdout) {
-			process.stdout.write(`${info}${this.eol}`);
+			if (this.date) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
+			} else {
+				process.stdout.write(`[ ${this.name} ] - ${info}${this.eol}`);
+			}
+			
 		} else {
-			console.log(`${info}${this.eol}`);
+			if (this.date) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
+			} else {
+				console.log(`[ ${this.name} ] - ${info}${this.eol}`);
+			}
 		}
 
 		if (callback) {

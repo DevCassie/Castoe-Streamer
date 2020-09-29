@@ -41,20 +41,20 @@ module.exports = class CastoeConsole extends Transform {
 		// Bind context for listener methods.
 		this._onError = this._onError.bind(this);
 
-		if (options.filename || options.dirname) {
-			throwIf('filename or dirname', 'stream');
-			this._basename = this.filename = options.filename ? path.basename(options.filename) : 'castoe.log';
+		if (options.file || options.dirname) {
+			throwIf('file or dirname', 'stream');
+			this._basename = this.file = options.file ? path.basename(options.file) : 'castoe.log';
 
-			this.dirname = options.dirname || path.dirname(options.filename);
+			this.dirname = options.dirname || path.dirname(options.file);
 			this.options = options.options || { flags: 'a' };
 		} else if (options.stream) {
-			throwIf('stream', 'filename', 'maxsize');
+			throwIf('stream', 'file', 'maxsize');
 			this._dest = this._stream.pipe(this._setupStream(options.stream));
 			this.dirname = path.dirname(this._dest.path);
 
 			/* We need to listen for drain events when write() returns false. */
 		} else {
-			throw new Error('Can\'t log to file without a filename or stream.');
+			throw new Error('Can\'t log to file without a file or stream.');
 		}
 
 		this.maxsize = options.maxsize || null;
@@ -63,6 +63,7 @@ module.exports = class CastoeConsole extends Transform {
 		this.maxFiles = options.maxFiles || null;
 		this.eol = options.eol || os.EOL;
 		this.tailable = options.tailable || false;
+		this.automatic = options.automatic || true;
 
 		/* Internal state variables representing the number of files this instance has created and the current size in bytes of the current log file. */
 		this._size = 0;
@@ -127,7 +128,7 @@ module.exports = class CastoeConsole extends Transform {
 			this._size += bytes;
 			this._pendingSize -= bytes;
 
-			debug('logged %s %s', this._size, output);
+			debug('Logged %s %s', this._size, 'bytes', output);
 			this.emit('logged', info);
 
 			/* Do not attempt to rotate files while opening. */
@@ -163,7 +164,7 @@ module.exports = class CastoeConsole extends Transform {
 			callback();
 		}
 
-		debug('written', written, this._drain);
+		debug('File has been written', written, this._drain);
 
 		this.finishIfEnding();
 
@@ -176,7 +177,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * @returns {Stream}
 	 */
 	stream(options = {}) {
-		const file = path.join(this.dirname, this.filename);
+		const file = path.join(this.dirname, this.file);
 		const stream = new Stream();
 		const tail = {
 			file,
@@ -205,8 +206,8 @@ module.exports = class CastoeConsole extends Transform {
 	 * @returns {undefined}
 	 */
 	open() {
-		/* If we don't have a filename then we were passed a stream and don't need to keep track of size. */
-		if (!this.filename) return;
+		/* If we don't have a file then we were passed a stream and don't need to keep track of size. */
+		if (!this.file) return;
 		if (this._opening) return;
 
 		this._opening = true;
@@ -217,7 +218,7 @@ module.exports = class CastoeConsole extends Transform {
 				return this.emit('error'. error);
 			}
 
-			debug('stat done: %S { size: %s }', this.filename, size);
+			debug('Statistics done: %S { size: %s }', this.file, size);
 			this._size = size;
 			this._dest = this._createStream(this._stream);
 			this._opening = false;
@@ -242,14 +243,14 @@ module.exports = class CastoeConsole extends Transform {
 
 		fs.stat(fullpath, (error, stat) => {
 			if (error && error.code === 'ENOENT') {
-				debug('ENOENT ok', fullpath);
-				/* Update internally tracked filename with the new target name. */
-				this.filename = target;
+				debug('ENOENT succes on', fullpath);
+				/* Update internally tracked file with the new target name. */
+				this.file = target;
 				return callback(null, 0);
 			}
 
 			if (error) {
-				debug(`error: ${error.code} ${fullpath}`);
+				debug(`Error: ${error.code} ${fullpath}`);
 				return callback(error);
 			}
 
@@ -258,8 +259,8 @@ module.exports = class CastoeConsole extends Transform {
 				return this._incFile(() => this.stat(callback));
 			}
 
-			/* Once we have figured out what the filename is. Set it and return the size. */
-			this.filename = target;
+			/* Once we have figured out what the file is. Set it and return the size. */
+			this.file = target;
 			callback(null, stat.size);
 		});
 	}
@@ -351,15 +352,15 @@ module.exports = class CastoeConsole extends Transform {
 	 * @returns {WritableStream} Stream that writes to disk for active file.
 	 */
 	_createStream(source) {
-		const fullpath = path.join(this.dirname, this.filename);
+		const fullpath = path.join(this.dirname, this.file);
 
-		debug('create stream start', fullpath, this.options);
+		debug('FileStream created.', fullpath, this.options);
 
 		const dest = fs.createWriteStream(fullpath, this.options)
 			.on('error', err => debug(err))
-			.on('close', () => debug('close', dest.path, dest.bytesWritten))
+			.on('close', () => debug('FileStream closed.', dest.path, dest.bytesWritten))
 			.on('open', () => {
-				debug('File has open.', fullpath);
+				debug('File opened.', fullpath);
 				this.emit('open', fullpath);
 				source.pipe(dest);
 
@@ -390,7 +391,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * @returns {undefined}
 	 */
 	_incFile(callback) {
-		debug('_incFile', this.filename);
+		debug('_incFile', this.file);
 		const ext = path.extname(this._basename);
 		const basename = path.basename(this._basename, ext);
 
@@ -403,7 +404,7 @@ module.exports = class CastoeConsole extends Transform {
 	}
 
 	/**
-	 * Gets the next filename to use for this instance in the case that log filesizes are being capped.
+	 * Gets the next file to use for this instance in the case that log filesizes are being capped.
 	 * @returns {String}
 	 * @private
 	 */
@@ -457,16 +458,16 @@ module.exports = class CastoeConsole extends Transform {
 		const isZipped = this.zippedArchive ? '.gz' : '';
 		for (let x = this.maxFiles - 1; x > 1; x--) {
 			tasks.push(function(index, callback) {
-				let fileName = `${basename}${index -1}${ext}${isZipped}`;
-				const tmppath = path.join(this.dirname, fileName);
+				let file = `${basename}${index -1}${ext}${isZipped}`;
+				const tmppath = path.join(this.dirname, file);
 
 				fs.existsSync(tmppath, exists => {
 					if (!exists) {
 						return callback(null);
 					}
 
-					fileName = `${basename}${index}${ext}${isZipped}`;
-					fs.rename(tmppath, path.join(this.dirname, fileName), callback);
+					file = `${basename}${index}${ext}${isZipped}`;
+					fs.rename(tmppath, path.join(this.dirname, file), callback);
 				});
 			}.bind(this, x));
 		}
@@ -484,5 +485,39 @@ module.exports = class CastoeConsole extends Transform {
 		if (!fs.existsSync(dirPath)) {
 			fs.mkdirSync(dirPath, { recursive: true });
 		}
+	}
+
+	/**
+	 * Core delete method exposed to Castoe File Transport.
+	 */
+	delete() {
+		const target = this._getFile();
+		const fullpath = path.join(this.dirname, target);
+
+		fs.access(fullpath, (err) => {
+			debug(`${fullpath} ${err ? 'does not exist' : 'exists'}`);
+
+			fs.unlink(fullpath, (error) => {
+				if (error) {
+					debug('Error while unlinking file %s', fullpath);	
+				}
+			});
+		})
+	}
+
+	/**
+	 * Core clone method exposed to Castoe File Transport.
+	 * @param {String} file - Which file needs to be cloned?
+	 * @param {String} destination - Where does the backup file needs to be cloned?
+	 * @returns {undefined}
+	 */
+	clone(file, destination) {
+		destination = `Backup_${file}`;
+
+		fs.copyFile(file, destination, (error) => {
+			if (error) {
+				debug('Error while cloning a file. %s', file);
+			}
+		});
 	}
 }
