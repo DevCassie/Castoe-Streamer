@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 30-9-2020
+
+<br />
+
+## Changes
+- Transports:
+	- FileTransport.js Added possibility, to use automated backups (overwriteable and unoverwriteable).
+
 ## V1.0.0 - 29-9-2020
 
 <br />
@@ -11,7 +19,7 @@ All notable changes to this project will be documented in this file.
 - Transports:
 	- FileTransport.js. Added clone and delete method.
 
-## Changed
+## Changes
 - Transports:
 	- ConsoleTransport.js
 		- Added option to show date.
@@ -28,7 +36,7 @@ All notable changes to this project will be documented in this file.
 - Transports:
 	- FileTransport.js
 
-## Changed
+## Changes
 - Transports:
 	- Index.js
 - Testing file.

@@ -63,7 +63,8 @@ module.exports = class CastoeConsole extends Transform {
 		this.maxFiles = options.maxFiles || null;
 		this.eol = options.eol || os.EOL;
 		this.tailable = options.tailable || false;
-		this.automatic = options.automatic || true;
+		this.automatic = options.automatic || false;
+		this.overwrite = options.overwrite || false;
 
 		/* Internal state variables representing the number of files this instance has created and the current size in bytes of the current log file. */
 		this._size = 0;
@@ -364,6 +365,10 @@ module.exports = class CastoeConsole extends Transform {
 				this.emit('open', fullpath);
 				source.pipe(dest);
 
+				if (this.automatic) {
+					this._automatedBackup(fullpath);
+				}
+
 				/* If rotation occured during the open operation then we immediatly start writing to a new PassThrough, begin opening the next file. Cleanup the previous source and dest once the source has drained. */
 				if (this.rotatedWhileOpening) {
 					this._stream = new PassThrough();
@@ -503,6 +508,68 @@ module.exports = class CastoeConsole extends Transform {
 				}
 			});
 		})
+	}
+
+	/**
+	 * Private method to convert a file to a backup file.
+	 * @param {String} file - Which file should be backed up?
+	 * @returns {undefined}
+	 * @private
+	 */
+	_automatedBackup(file) {
+		const fullpath = path.join(this.dirname, file);
+
+		fs.access(fullpath, (error) => {
+			if (error) {
+				debug('Error while creating an automated backup. %s', fullpath);
+			}
+
+
+			const newPath = path.join(this.dirname, 'Backups/');
+			if (!fs.existsSync(newPath)) {
+				fs.mkdirSync(newPath);
+			}
+
+			/* fs.readdirSync(newPath).forEach((files) => {
+				files.forEach(f => {
+					fs.access(f, (error) => {
+						if (error) throw new Error;
+
+						
+					});
+				});
+			}); */
+			let newFileLocation = `${newPath}Backup_${file}`;
+			if (!fs.existsSync(newFileLocation)) {
+				if (this.overwrite) {
+					fs.copyFileSync(file, newFileLocation);
+				} else {
+					fs.readdir(newPath, (err, files) => {
+						if (err) throw new Error;
+						console.log(files);
+						for (let i = 0; i < files.length; i++) {
+							newFileLocation = `${newPath}Backup_${i}_${file}`;
+
+							fs.copyFileSync(file, newFileLocation);
+						}
+					});
+				}
+			} else {
+				if (this.overwrite) {
+					fs.copyFileSync(file, newFileLocation);
+				} else {
+					fs.readdir(newPath, (err, files) => {
+						if (err) throw new Error;
+						console.log(files);
+						for (let i = 0; i < files.length; i++) {
+							newFileLocation = `${newPath}Backup_${i}_${file}`;
+
+							fs.copyFileSync(file, newFileLocation);
+						}
+					});
+				}
+			}
+		});
 	}
 
 	/**
