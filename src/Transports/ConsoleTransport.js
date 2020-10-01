@@ -15,10 +15,10 @@ module.exports = class CastoeConsole extends Transform {
 	constructor(options = {}) {
 		super(options);
 
-		// Expose the name of this Transport on the prototype
 		this.name = options.name || 'Castoe Console';
 		this.date = options.date;
-		this.showFile = options.showFile || false;
+		this.traceFile = options.traceFile || false;
+		this.showType = options.showType || false;
 		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
 		this.consoleWarnLevels = this._stringArrayToSet(options.consoleWarnLevels);
 		this.eol = options.eol || os.EOL;
@@ -27,7 +27,7 @@ module.exports = class CastoeConsole extends Transform {
 	}
 
 	/**
-	 * Core logging method exposed to Castoe Logger.
+	 * Core logging method exposed to Castoe Console Logger.
 	 * @param {*} info - Input for the log.
 	 * @param {*} callback - Callback function.
 	 */
@@ -36,38 +36,36 @@ module.exports = class CastoeConsole extends Transform {
 
 		if (this.stderrLevels[info]) {
 			if (process.stderr) {
-				if (this.date) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
-				} else {
-					process.stdout.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				if (this.date && this.showType === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
 	
 			
 			} else {
-				if (this.date) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
-				} else {
-					process.stderr.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				if (this.date && this.showType === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
-				
 			}
 
 			if (callback) {
 				callback();
 			}
-			return;
 		} else if (this.consoleWarnLevels[info]) {
 			if (process.stderr) {
-				if (this.date) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
-				} else {
-					process.stdout.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				if (this.date && this.showType === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false){
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
 			} else {
-				if (this.date) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
-				} else {
-					process.stderr.write(`[ ${this.name} ] - ${info}${this.eol}`);
+				if (this.date && this.showType === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false){
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
 			}
 
@@ -78,17 +76,19 @@ module.exports = class CastoeConsole extends Transform {
 		}
 
 		if (process.stdout) {
-			if (this.date) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
-			} else {
-				process.stdout.write(`[ ${this.name} ] - ${info}${this.eol}`);
+			if (this.date && this.showType === true) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);		
+			} else if (this.date && this.showType === false) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 			}
 			
 		} else {
-			if (this.date) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${info}${this.eol}`);
+			if (this.date && this.showType === true) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (this.date && this.showType === false) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 			} else {
-				console.log(`[ ${this.name} ] - ${info}${this.eol}`);
+				console.log(`[ ${this.name} ] - ${this._handleInputTypes(info)}${this.eol}`);
 			}
 		}
 
@@ -125,5 +125,61 @@ module.exports = class CastoeConsole extends Transform {
 
 			return set;
 		}, {});
+	}
+
+	/**
+	 * Function to check for the input, to change the writeable states.
+	 * @param {undefined} input 
+	 * @returns {undefined}
+	 * @private
+	 */
+	_typeOfInput(input) {
+		if (typeof input === 'bigint') {
+			return 'Typeof Bigint';
+		} else if (typeof input === 'boolean') {
+			return 'Typeof Boolean';
+		} else if (typeof input === 'function') {
+			return 'Typeof Function';
+		} else if (typeof input === 'number') {
+			return 'Typeof Number';
+		} else if (typeof input === 'object') {
+			return 'Typeof Object';
+		} else if (typeof input === 'string') {
+			return 'Typeof String';
+		} else if (typeof input === 'symbol') {
+			return 'Typeof Symbol';
+		} else if (typeof input === 'undefined') {
+			return 'Typeof Undefined';
+		} else {
+			return undefined;
+		}
+	}
+
+	/**
+	 * Function to handle different types of inputs from the user.
+	 * @param {mixed} input 
+	 * @returns {undefined}
+	 * @private
+	 */
+	_handleInputTypes(input) {
+		if (typeof input === 'bigint') {
+			return input.toString();
+		} else if (typeof input === 'boolean') {
+			return input;
+		} else if (typeof input === 'function') {
+			return `function ${input.name}() { native code }`;
+		} else if (typeof input === 'number') {
+			return input.toString();
+		} else if (typeof input === 'object') {
+			return JSON.stringify(input);
+		} else if (typeof input === 'string') {
+			return input;
+		} else if (typeof input === 'symbol') {
+			return input.toString();
+		} else if (typeof input === 'undefined') {
+			return undefined;
+		} else {
+			return undefined;
+		}
 	}
 }

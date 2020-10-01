@@ -6,8 +6,9 @@ All To Do Items can be found in here. Those items are seperated in different cat
 ## Transports
 - [x] Console Transport.
 	- [ ] Options.
-		- [x] Show Name.
+		- [x] Show name.
 		- [x] Show date.
+		- [x] Show type.
 		- [ ] Show file.
 	- [ ] Destructure an Object.
 - [ ] File Transport.
@@ -16,6 +17,7 @@ All To Do Items can be found in here. Those items are seperated in different cat
 		- [x] Automatic backups.
 		- [x] Overwrite backup file.
 		- [ ] Flags.
+	- [ ] Multiple file support, with different names.
 	- [ ] Clone method.
 	- [ ] Delete method.
 	- [ ] Send method.
@@ -31,15 +33,21 @@ All To Do Items can be found in here. Those items are seperated in different cat
 ## Syntax
 ```javascript
 
-const castoe = new CastoeLogger({
-	name: 'Castoe Project'
-	Transports: [
-		console: new CastoeConsole(),
-		file: new CastoeFile()
-	],
-	date: 'HH:mm A',
-	file: true
+const castoeFile = new CastoeLogger.File({
+	file: 'file.txt',
+	automatic: true,
+	overwrite: true,
+	flags: 'a+'
 });
 
-castoe.send('Something to send.');
+castoeFile.send('Something to send.');
+
+const castoeConsole = new CastoeLogger.Console({
+	name: 'Castoe Console',
+	date: 'LT',
+	showType: true,
+	traceFile: true
+});
+
+castoeConsole.send('Testing');
 ```

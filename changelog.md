@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 1-10-2020
+
+<br />
+
+## Changes
+- Transports:
+	- ConsoleTransport.js Added possibility, to show input Type using a function.
+- To Do:
+	- Added a few new methods.
+	- Added a few new options for the consoleTransport.
+
+
 ## V1.0.0 - 30-9-2020
 
 <br />
