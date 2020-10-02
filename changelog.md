@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 2-10-2020
+
+<br />
+
+## Added
+- Configuration:
+	- Started working on different level configurations.
+
+## Changes
+- Transports:
+	- ConsoleTransport.js Added color and showFile support.
+
 ## V1.0.0 - 1-10-2020
 
 <br />

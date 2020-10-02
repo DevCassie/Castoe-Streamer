@@ -1,6 +1,11 @@
 const os = require('os');
+const path = require('path');
 const moment = require('moment');
-const { Transform } = require('stream'); 
+const { Transform } = require('stream');
+const colors = require('colors/safe');
+
+// eslint-disable-next-line no-unused-vars
+const { levels } = require('../Configuration/index.js');
 
 /**
  * @type {Console}
@@ -19,11 +24,21 @@ module.exports = class CastoeConsole extends Transform {
 		this.date = options.date;
 		this.traceFile = options.traceFile || false;
 		this.showType = options.showType || false;
+		this.stackIndex = options.stackIndex || 0;
 		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
 		this.consoleWarnLevels = this._stringArrayToSet(options.consoleWarnLevels);
 		this.eol = options.eol || os.EOL;
 
 		this.setMaxListeners(30);
+		this.colors = options.colors || colors.setTheme({
+			bigint: 'green',
+			boolean: 'magenta',
+			function: 'cyan',
+			number: 'yellow',
+			object: 'blue',
+			string: 'white',
+			symbol: 'gray'
+		});
 	}
 
 	/**
@@ -37,7 +52,7 @@ module.exports = class CastoeConsole extends Transform {
 		if (this.stderrLevels[info]) {
 			if (process.stderr) {
 				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				} else if (this.date && this.showType === false) {
 					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
@@ -45,7 +60,7 @@ module.exports = class CastoeConsole extends Transform {
 			
 			} else {
 				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				} else if (this.date && this.showType === false) {
 					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
@@ -57,13 +72,13 @@ module.exports = class CastoeConsole extends Transform {
 		} else if (this.consoleWarnLevels[info]) {
 			if (process.stderr) {
 				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				} else if (this.date && this.showType === false){
 					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
 			} else {
 				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				} else if (this.date && this.showType === false){
 					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 				}
@@ -77,14 +92,14 @@ module.exports = class CastoeConsole extends Transform {
 
 		if (process.stdout) {
 			if (this.date && this.showType === true) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);		
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);		
 			} else if (this.date && this.showType === false) {
 				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 			}
 			
 		} else {
 			if (this.date && this.showType === true) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 			} else if (this.date && this.showType === false) {
 				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
 			} else {
@@ -127,6 +142,27 @@ module.exports = class CastoeConsole extends Transform {
 		}, {});
 	}
 
+	_getFileCall() {
+		const stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/i;
+		const stackReg2 = /at\s+()(.*):(\d*):(\d*)/i;
+		const stackList = new Error().stack.split('\n').slice(3);
+		const s = stackList[this.stackIndex];
+		const sp = stackReg.exec(s) || stackReg2.exec(2);
+
+		const data = {};
+
+		if (sp && sp.length === 5) {
+			data.method = sp[1];
+			data.path = sp[2];
+			data.line = sp[3];
+			data.position = sp[4];
+			data.file = path.basename(data.path);
+			data.stack = stackList.join('\n');
+		}
+
+		return `${JSON.stringify(data.file).replace('"', '').replace('"', '')}:${JSON.stringify(data.line).replace('"', '').replace('"', '')}`;
+	}
+
 	/**
 	 * Function to check for the input, to change the writeable states.
 	 * @param {undefined} input 
@@ -135,19 +171,19 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	_typeOfInput(input) {
 		if (typeof input === 'bigint') {
-			return 'Typeof Bigint';
+			return colors.bigint('Typeof Bigint');
 		} else if (typeof input === 'boolean') {
-			return 'Typeof Boolean';
+			return colors.boolean('Typeof Boolean');
 		} else if (typeof input === 'function') {
-			return 'Typeof Function';
+			return colors.function('Typeof Function');
 		} else if (typeof input === 'number') {
-			return 'Typeof Number';
+			return colors.number('Typeof Number');
 		} else if (typeof input === 'object') {
-			return 'Typeof Object';
+			return colors.object('Typeof Object');
 		} else if (typeof input === 'string') {
-			return 'Typeof String';
+			return colors.string('Typeof String');
 		} else if (typeof input === 'symbol') {
-			return 'Typeof Symbol';
+			return colors.symbol('Typeof Symbol');
 		} else if (typeof input === 'undefined') {
 			return 'Typeof Undefined';
 		} else {
@@ -163,19 +199,19 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	_handleInputTypes(input) {
 		if (typeof input === 'bigint') {
-			return input.toString();
+			return colors.bigint(input);
 		} else if (typeof input === 'boolean') {
-			return input;
+			return colors.boolean(input);
 		} else if (typeof input === 'function') {
-			return `function ${input.name}() { native code }`;
+			return colors.function(`function ${input.name}() { native code }`);
 		} else if (typeof input === 'number') {
-			return input.toString();
+			return colors.number(input.toString());
 		} else if (typeof input === 'object') {
-			return JSON.stringify(input);
+			return colors.object(JSON.stringify(input));
 		} else if (typeof input === 'string') {
-			return input;
+			return colors.string(input);
 		} else if (typeof input === 'symbol') {
-			return input.toString();
+			return colors.symbol(input.toString());
 		} else if (typeof input === 'undefined') {
 			return undefined;
 		} else {

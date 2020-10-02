@@ -1,5 +1,4 @@
 const Logger = require('./src/Transports/index.js');
-
 /* 
 const castoeLog = new Logger.File({
 	file: 'file.txt',
@@ -9,11 +8,12 @@ const castoeLog = new Logger.File({
 castoeLog.send('Testing'); */
 
 const castoeConsole = new Logger.Console({
-	name: 'Castoe Console',
+	name: 'Console',
 	date: 'LT',
-	showType: true
+	showType: true,
+	showFile: true
 })
 
-const x = true;
+const x = false;
 
 castoeConsole.send(x);

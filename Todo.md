@@ -44,8 +44,7 @@ castoeFile.send('Something to send.');
 
 const castoeConsole = new CastoeLogger.Console({
 	name: 'Castoe Console',
-	date: 'LT',
-	showType: true,
+	showType: false,
 	traceFile: true
 });
 
