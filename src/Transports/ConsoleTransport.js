@@ -22,6 +22,7 @@ module.exports = class CastoeConsole extends Transform {
 	constructor(options = {}) {
 		super(options);
 
+		this.options = options;
 		/**
 		 * @type {String}
 		 */
@@ -61,7 +62,7 @@ module.exports = class CastoeConsole extends Transform {
 					symbol: options.colors.symbol
 				});
 			} else {
-				throw new Error('options.colors needs to be an Object like this:\n{\nbigint: String,\nboolean: String,\nfunction: String,\nnumber: String,\nobject: String,\nsymbol: String\n}');
+				throw new Error('options.colors needs to be an Object like this:\n{bigint: String, boolean: String, function: String, number: String, object: String,symbol: String}');
 			}
 
 			/* 
@@ -102,18 +103,44 @@ module.exports = class CastoeConsole extends Transform {
 
 		if (this.stderrLevels[info]) {
 			if (process.stderr) {
-				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
-				} else if (this.date && this.showType === false) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				if (this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === true ) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === false ) {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);
 				}
-	
-			
 			} else {
-				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
-				} else if (this.date && this.showType === false) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				if (this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === true ) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === false ) {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);
 				}
 			}
 
@@ -122,16 +149,44 @@ module.exports = class CastoeConsole extends Transform {
 			}
 		} else if (this.consoleWarnLevels[info]) {
 			if (process.stderr) {
-				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
-				} else if (this.date && this.showType === false){
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				if (this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === true ) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === false ) {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);
 				}
 			} else {
-				if (this.date && this.showType === true) {
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
-				} else if (this.date && this.showType === false){
-					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+				if (this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (this.date && this.showType === false && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === true) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === true ) {
+					process.stdout.write(`[ ${this.name} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === true && this.traceFile === false) {
+					process.stdout.write(`[ ${this.name} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else if (!this.date && this.showType === false && this.traceFile === false ) {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+				} else {
+					process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);
 				}
 			}
 
@@ -142,26 +197,50 @@ module.exports = class CastoeConsole extends Transform {
 		}
 
 		if (process.stdout) {
-			if (this.date && this.showType === true) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);		
-			} else if (this.date && this.showType === false) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
-			}
-			
-		} else {
-			if (this.date && this.showType === true) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
-			} else if (this.date && this.showType === false) {
-				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ] - ${this._handleInputTypes(info)}${this.eol}`);	
+			if (this.date && this.showType === true && this.traceFile === true) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (this.date && this.showType === true && this.traceFile === false) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (this.date && this.showType === false && this.traceFile === true) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (this.date && this.showType === false && this.traceFile === false) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === true && this.traceFile === true) {
+				process.stdout.write(`[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === false && this.traceFile === true ) {
+				process.stdout.write(`[ ${this.name} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === true && this.traceFile === false) {
+				process.stdout.write(`[ ${this.name} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === false && this.traceFile === false ) {
+				process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);	
 			} else {
-				console.log(`[ ${this.name} ] - ${this._handleInputTypes(info)}${this.eol}`);
+				process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);
+			}
+		} else {
+			if (this.date && this.showType === true && this.traceFile === true) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (this.date && this.showType === true && this.traceFile === false) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (this.date && this.showType === false && this.traceFile === true) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (this.date && this.showType === false && this.traceFile === false) {
+				process.stdout.write(`[ ${this.name} | ${moment(new Date()).format(this.date)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === true && this.traceFile === true) {
+				process.stdout.write(`[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === false && this.traceFile === true ) {
+				process.stdout.write(`[ ${this.name} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === true && this.traceFile === false) {
+				process.stdout.write(`[ ${this.name} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else if (!this.date && this.showType === false && this.traceFile === false ) {
+				process.stdout.write(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);	
+			} else {
+				console.log(`[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`);
 			}
 		}
 
 		if (callback) {
 			callback();
 		}
-
 		return;
 	}
 
@@ -267,6 +346,33 @@ module.exports = class CastoeConsole extends Transform {
 			return undefined;
 		} else {
 			return undefined;
+		}
+	}
+
+	/**
+	 * Basic option handler.
+	 * @param {Object} info 
+	 * @private
+	 */
+	_handleOptions(info) {
+		if (this.date && this.showType === true && this.traceFile === true) {
+			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else if (this.date && this.showType === true && this.traceFile === false) {
+			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else if (this.date && this.showType === false && this.traceFile === true) {
+			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else if (this.date && this.showType === false && this.traceFile === false) {
+			return `[ ${this.name} | ${moment(new Date()).format(this.date)} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else if (!this.date && this.showType === true && this.traceFile === true) {
+			return `[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else if (!this.date && this.showType === false && this.traceFile === true ) {
+			return `[ ${this.name} | ${this._getFileCall()} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else if (!this.date && this.showType === true && this.traceFile === false) {
+			return `[ ${this.name} | ${this._typeOfInput(info)} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else if (!this.date && this.showType === false && this.traceFile === false ) {
+			return `[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`;	
+		} else {
+			return `[ ${this.name} ]\n${this._handleInputTypes(info)}${this.eol}`;
 		}
 	}
 }

@@ -8,14 +8,13 @@ const castoeLog = new Logger.File({
 castoeLog.send('Testing'); */
 
 const castoeConsole = new Logger.Console({
-	name: 'Console',
-	date: 'LT',
+	name: 'Castoe console',
 	showType: true,
-	traceFile: true
+	traceFile: false
 });
 
 const x = false;
 
 castoeConsole.send(x);
 
-castoeConsole.send();
+castoeConsole.send(() => { return castoeConsole.send(true)});
