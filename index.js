@@ -9,12 +9,13 @@ castoeLog.send('Testing'); */
 
 const castoeConsole = new Logger.Console({
 	name: 'Castoe console',
+	date: 'LTS',
 	showType: true,
-	traceFile: false
+	traceFile: true,
 });
 
 const x = false;
 
 castoeConsole.send(x);
 
-castoeConsole.send(() => { return castoeConsole.send(true)});
+castoeConsole.send(() => { return castoeConsole.send(true) });
