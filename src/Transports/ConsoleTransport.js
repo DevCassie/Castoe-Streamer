@@ -13,16 +13,30 @@ const { levels } = require('../Configuration/index.js');
  */
 module.exports = class CastoeConsole extends Transform {
 	/**
-   * Constructor function for the Console transport object responsible for
-   * persisting log messages and metadata to a terminal or TTY.
-   * @param {!Object} [options={}] - Options for this instance.
-   */	
+   	 * Constructor function for the Console transport object responsible for
+   	 * persisting log messages and metadata to a terminal or TTY.
+   	 * @param {!Object} [options={}] - Options for this instance.
+	 * @example new Logger.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cya', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray'}
+		});
+   	*/	
 	constructor(options = {}) {
 		super(options);
 
+		/**
+		 * @type {String}
+		 */
 		this.name = options.name || 'Castoe Console';
+		/**
+		 * @type {String}
+		 */
 		this.date = options.date;
+		/**
+		 * @type {Boolean}
+		 */
 		this.traceFile = options.traceFile || false;
+		/**
+		 * @type {Boolean}
+		 */
 		this.showType = options.showType || false;
 		this.stackIndex = options.stackIndex || 0;
 		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
@@ -30,15 +44,52 @@ module.exports = class CastoeConsole extends Transform {
 		this.eol = options.eol || os.EOL;
 
 		this.setMaxListeners(30);
-		this.colors = options.colors || colors.setTheme({
-			bigint: 'green',
-			boolean: 'magenta',
-			function: 'cyan',
-			number: 'yellow',
-			object: 'blue',
-			string: 'white',
-			symbol: 'gray'
-		});
+		/**
+		 * @type {Object} 
+		 */
+		this.colors = options.colors;
+
+		if (options.colors) {
+			if (options.colors.bigint && options.colors.boolean && options.colors.function && options.colors.number && options.colors.object && options.colors.string && options.colors.symbol) {
+				colors.setTheme({
+					bigint: options.colors.bigint,
+					boolean: options.colors.boolean,
+					function: options.colors.function,
+					number: options.colors.number,
+					object: options.colors.object,
+					string: options.colors.string,
+					symbol: options.colors.symbol
+				});
+			} else {
+				throw new Error('options.colors needs to be an Object like this:\n{\nbigint: String,\nboolean: String,\nfunction: String,\nnumber: String,\nobject: String,\nsymbol: String\n}');
+			}
+
+			/* 
+			const keys = Object.keys(options.colors);
+			console.log(keys);
+			const values = Object.values(options.colors);
+			console.log(values);
+			const newArray = [];
+	
+
+			for (let i = 0; i < keys.size; i++) {
+				newArray.push(keys[i], values[i]);
+			}
+
+			const newTheme = Object.assign(options.colors, newArray);
+			colors.setTheme(newTheme); */
+
+		} else {
+			colors.setTheme({
+				bigint: 'green',
+				boolean: 'magenta',
+				function: 'cyan',
+				number: 'yellow',
+				object: 'blue',
+				string: 'white',
+				symbol: 'gray'
+			});
+		}
 	}
 
 	/**

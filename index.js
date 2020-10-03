@@ -11,9 +11,11 @@ const castoeConsole = new Logger.Console({
 	name: 'Console',
 	date: 'LT',
 	showType: true,
-	showFile: true
-})
+	traceFile: true
+});
 
 const x = false;
 
 castoeConsole.send(x);
+
+castoeConsole.send();
