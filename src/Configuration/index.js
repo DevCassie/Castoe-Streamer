@@ -3,5 +3,5 @@ Object.defineProperty(exports, 'levels', {
 	enumerable: true,
 	get() {
 		return require('./levels.js');
-	}	
+	}
 });

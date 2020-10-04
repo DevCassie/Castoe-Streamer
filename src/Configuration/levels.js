@@ -1,6 +1,8 @@
-module.exports = {
-	info: 0,
-	debug: 1,
-	warning: 2,
-	error: 3,
+const levels = {
+	info: 'info',
+	debug: 'debug',
+	warning: 'warning',
+	error: 'error'
 }
+
+module.exports = levels;

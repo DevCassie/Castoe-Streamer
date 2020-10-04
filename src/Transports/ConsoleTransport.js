@@ -6,6 +6,7 @@ const colors = require('colors/safe');
 
 // eslint-disable-next-line no-unused-vars
 const { levels } = require('../Configuration/index.js');
+console.log(levels);
 
 /**
  * @type {Console}
@@ -133,6 +134,7 @@ module.exports = class CastoeConsole extends Transform {
 		if (callback) {
 			callback();
 		}
+
 		return;
 	}
 
