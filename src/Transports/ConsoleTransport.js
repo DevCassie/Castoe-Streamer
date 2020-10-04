@@ -14,12 +14,12 @@ console.log(levels);
  */
 module.exports = class CastoeConsole extends Transform {
 	/**
-		   * Constructor function for the Console transport object responsible for
-		   * persisting log messages and metadata to a terminal or TTY.
-		   * @param {!Object} [options={}] - Options for this instance.
+	 * Constructor function for the Console transport object responsible for
+	 * persisting log messages and metadata to a terminal or TTY.
+	 * @param {!Object} [options={}] - Options for this instance.
 	 * @example new Logger.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cya', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray'}
 		});
-		  */
+	 */
 	constructor(options = {}) {
 		super(options);
 
