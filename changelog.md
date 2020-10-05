@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 4-10-2020
+
+<br />
+
+## Added
+- Function support to use loose files.
+	- Clone function.
+
+## Changes
+- Changelog:
+	- Updated the changelog from the past two days.
+
+## V1.0.0 - 3-10-2020
+
+<br />
+
+## Added
+- Transports:
+	- ConsoleTransport:
+		- Customizable color support.
+
 ## V1.0.0 - 2-10-2020
 
 <br />
