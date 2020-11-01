@@ -1,21 +1,12 @@
-const Logger = require('./src/Transports/index.js');
+const castoeStreamer = require('./src/index.js');
 
-const castoeLog = new Logger.File({
-	file: 'file.txt',
-	automatic: true,
-	overwrite: true,
-});
-castoeLog.send('Testing');
-
-const castoeConsole = new Logger.Console({
-	name: 'Castoe console',
-	date: 'LTS',
-	showType: true,
+const castoeConsole = new castoeStreamer.Transports.Console({
+	name: 'Castoe Console Testing',
 	traceFile: true,
+	date: 'LTS',
+	showType: true
 });
 
-const x = false;
+castoeConsole.send('Testing');
 
-castoeConsole.send(x);
-
-castoeConsole.send(() => { return castoeConsole.send(true) });
+castoeConsole.send(true);

@@ -12,4 +12,4 @@ Object.defineProperty(exports, 'Transports', {
 	get() {
 		return require('./Transports/index.js');
 	}
-})
+});

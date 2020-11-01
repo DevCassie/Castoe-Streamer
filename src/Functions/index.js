@@ -5,3 +5,11 @@ Object.defineProperty(exports, 'clone', {
 		return require('./clone.js');
 	}
 });
+
+Object.defineProperty(exports, 'delete', {
+	configurable: false,
+	enumerable: false,
+	get() {
+		return require('./delete.js');
+	}
+});

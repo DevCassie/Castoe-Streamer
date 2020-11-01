@@ -17,7 +17,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * Constructor function for the Console transport object responsible for
 	 * persisting log messages and metadata to a terminal or TTY.
 	 * @param {!Object} [options={}] - Options for this instance.
-	 * @example new Logger.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cya', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray'}
+	 * @example new Logger.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cya', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray', date: 'LTS', showType: true}
 		});
 	 */
 	constructor(options = {}) {
@@ -82,7 +82,7 @@ module.exports = class CastoeConsole extends Transform {
 			colors.setTheme(newTheme); */
 
 		} else {
-			colors.setTheme({
+			options.colors = colors.setTheme({
 				bigint: 'green',
 				boolean: 'magenta',
 				function: 'cyan',
@@ -166,6 +166,9 @@ module.exports = class CastoeConsole extends Transform {
 		}, {});
 	}
 
+	/**
+	 * @private
+	 */
 	_getFileCall() {
 		const stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/i;
 		const stackReg2 = /at\s+()(.*):(\d*):(\d*)/i;

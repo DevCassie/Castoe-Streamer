@@ -5,18 +5,19 @@ All To Do Items can be found in here. Those items are seperated in different cat
 
 ## Transports
 - [x] Console Transport.
-	- [ ] Options.
+	- [x] Options.
 		- [x] Show name.
 		- [x] Show date.
 		- [x] Show type.
-		- [ ] Show file.
-	- [ ] Destructure an Object.
+		- [x] Show file.
+		- [x] Color support.
+	- [x] Destructure an Object.
 - [ ] File Transport.
 	- [ ] Options.
 		- [x] File.
 		- [x] Automatic backups.
 		- [x] Overwrite backup file.
-		- [ ] Flags.
+		- [x] Flags.
 	- [ ] Multiple file support, with different names.
 	- [ ] Clone method.
 	- [ ] Delete method.
