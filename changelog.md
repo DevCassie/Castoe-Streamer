@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 2-11-2020
+
+<br />
+
+## Added
+- Functions:
+	- Added a rename function.	
+
+## Changes
+- Transports:
+	- FileTransport:
+		- Removed unnecesary lines of code.
+		- Made some functions private.
+	- ConsoleTransport:
+		- Minor change to jsdocs.
+- Markdowns:
+	- Readme:
+		- Updated the readme.
+
 ## V1.0.0 - 4-10-2020
 
 <br />

@@ -1,4 +1,4 @@
-Object.defineProperty(exports, 'functions', {
+Object.defineProperty(exports, 'Functions', {
 	enumerable: false,
 	configurable: false,
 	get() {

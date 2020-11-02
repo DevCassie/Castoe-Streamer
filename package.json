@@ -1,7 +1,7 @@
 {
-  "name": "castoe-logger",
+  "name": "castoe-streamer",
   "version": "1.0.0",
-  "description": "A customizable logger for the Official Castoe Bot.",
+  "description": "A stream handler package for the Official Castoe Bot.",
   "main": "index.js",
   "scripts": {
     "test": "echo Test script is working!",
@@ -11,7 +11,7 @@
   "author": "Cas Martens",
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/DevCassie/Castoe-Logger",
+    "url": "https://github.com/DevCassie/Castoe-Streamer",
     "type": "public"
   },
   "dependencies": {

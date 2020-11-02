@@ -98,6 +98,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * Core logging method exposed to Castoe Console Logger.
 	 * @param {*} info - Input for the log.
 	 * @param {*} callback - Callback function.
+	 * @returns {undefined}
 	 */
 	send(info, callback) {
 		setImmediate(() => this.emit('logged', info));

@@ -4,7 +4,6 @@ const { Transform, PassThrough, Stream } = require('stream');
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
-const { debug } = require('console');
 const asyncSeries = require('async-series');
 
 const tailFile = require('../lib/tailFile.js');
@@ -129,7 +128,6 @@ module.exports = class CastoeConsole extends Transform {
 			this._size += bytes;
 			this._pendingSize -= bytes;
 
-			debug('Logged %s %s', this._size, 'bytes', output);
 			this.emit('logged', info);
 
 			/* Do not attempt to rotate files while opening. */
@@ -165,8 +163,6 @@ module.exports = class CastoeConsole extends Transform {
 			callback();
 		}
 
-		debug('File has been written', written, this._drain);
-
 		this.finishIfEnding();
 
 		return written;
@@ -176,6 +172,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * Returns a log stream for this transport. Options object is optional.
 	 * @param {Object} options - Stream options for this instance.
 	 * @returns {Stream}
+	 * @private
 	 */
 	stream(options = {}) {
 		const file = path.join(this.dirname, this.file);
@@ -205,6 +202,7 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Checks to see the filesize.
 	 * @returns {undefined}
+	 * @private
 	 */
 	open() {
 		/* If we don't have a file then we were passed a stream and don't need to keep track of size. */
@@ -237,6 +235,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * Stat the file and assess information in order to create the proper stream.
 	 * @param {*} callback 
 	 * @returns {undefined}
+	 * @private
 	 */
 	stat(callback) {
 		const target = this._getFile();
@@ -270,6 +269,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * Closes the stream associated with this instance.
 	 * @param {Function} callback 
 	 * @returns {undefined}
+	 * @private
 	 */
 	close(callback) {
 		if (!this._stream) {
@@ -355,8 +355,6 @@ module.exports = class CastoeConsole extends Transform {
 	_createStream(source) {
 		const fullpath = path.join(this.dirname, this.file);
 
-		debug('FileStream created.', fullpath, this.options);
-
 		const dest = fs.createWriteStream(fullpath, this.options)
 			.on('error', err => debug(err))
 			.on('close', () => debug('FileStream closed.', dest.path, dest.bytesWritten))
@@ -380,7 +378,6 @@ module.exports = class CastoeConsole extends Transform {
 				}
 			});
 
-		debug('Create stream ok.', fullpath);
 		if (this.zippedArchive) {
 			const gzip = zlib.createGzip();
 			gzip.pipe(dest);
@@ -396,7 +393,6 @@ module.exports = class CastoeConsole extends Transform {
 	 * @returns {undefined}
 	 */
 	_incFile(callback) {
-		debug('_incFile', this.file);
 		const ext = path.extname(this._basename);
 		const basename = path.basename(this._basename, ext);
 
@@ -500,11 +496,10 @@ module.exports = class CastoeConsole extends Transform {
 		const fullpath = path.join(this.dirname, target);
 
 		fs.access(fullpath, (err) => {
-			debug(`${fullpath} ${err ? 'does not exist' : 'exists'}`);
-
+			if (err) return console.error(err);
 			fs.unlink(fullpath, (error) => {
 				if (error) {
-					debug('Error while unlinking file %s', fullpath);	
+					console.error('Error while unlinking file %s', fullpath);	
 				}
 			});
 		})
@@ -520,9 +515,7 @@ module.exports = class CastoeConsole extends Transform {
 		const fullpath = path.join(this.dirname, file);
 
 		fs.access(fullpath, (error) => {
-			if (error) {
-				debug('Error while creating an automated backup. %s', fullpath);
-			}
+			if (error) return console.error('Error while creating an automated backup. %s', fullpath);
 
 
 			const newPath = path.join(this.dirname, 'Backups/');
@@ -530,15 +523,6 @@ module.exports = class CastoeConsole extends Transform {
 				fs.mkdirSync(newPath);
 			}
 
-			/* fs.readdirSync(newPath).forEach((files) => {
-				files.forEach(f => {
-					fs.access(f, (error) => {
-						if (error) throw new Error;
-
-						
-					});
-				});
-			}); */
 			let newFileLocation = `${newPath}Backup_${file}`;
 			if (!fs.existsSync(newFileLocation)) {
 				if (this.overwrite) {
@@ -546,7 +530,6 @@ module.exports = class CastoeConsole extends Transform {
 				} else {
 					fs.readdir(newPath, (err, files) => {
 						if (err) throw new Error;
-						console.log(files);
 						for (let i = 0; i < files.length; i++) {
 							newFileLocation = `${newPath}Backup_${i}_${file}`;
 
@@ -560,7 +543,6 @@ module.exports = class CastoeConsole extends Transform {
 				} else {
 					fs.readdir(newPath, (err, files) => {
 						if (err) throw new Error;
-						console.log(files);
 						for (let i = 0; i < files.length; i++) {
 							newFileLocation = `${newPath}Backup_${i}_${file}`;
 
@@ -582,9 +564,7 @@ module.exports = class CastoeConsole extends Transform {
 		destination = `Backup_${file}`;
 
 		fs.copyFile(file, destination, (error) => {
-			if (error) {
-				debug('Error while cloning a file. %s', file);
-			}
+			if (error) return console.error('Error while cloning a file. %s', file);
 		});
 	}
 }

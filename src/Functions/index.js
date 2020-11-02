@@ -13,3 +13,11 @@ Object.defineProperty(exports, 'delete', {
 		return require('./delete.js');
 	}
 });
+
+Object.defineProperty(exports, 'rename', {
+	configurable: false,
+	enumerable: false,
+	get() {
+		return require('./rename.js');
+	}	
+});
