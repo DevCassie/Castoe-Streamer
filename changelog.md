@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 8-11-2020
+
+<br />
+
+## Added
+- Transports:
+	- ConsoleTransport:
+		- Clear method.
+
 ## V1.0.0 - 2-11-2020
 
 <br />
