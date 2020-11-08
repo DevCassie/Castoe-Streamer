@@ -5,7 +5,7 @@ const { rename } = require('fs');
  * @param {String} file - Which file needs to be deleted?
  * @returns {undefined}
  */
-module.exports = function(oldName, newName) {
+module.exports = function Rename(oldName, newName) {
 	try {
 		rename(oldName, newName, (error) => {
 			if (error) throw Error;
