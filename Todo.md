@@ -12,17 +12,21 @@ All To Do Items can be found in here. Those items are seperated in different cat
 		- [x] Show file.
 		- [x] Color support.
 	- [x] Destructure an Object.
-- [ ] File Transport.
-	- [ ] Options.
+- [x] File Transport.
+	- [x] Options.
 		- [x] File.
 		- [x] Automatic backups.
 		- [x] Overwrite backup file.
 		- [x] Flags.
-	- [ ] Multiple file support, with different names.
-	- [ ] Clone method.
-	- [ ] Delete method.
-	- [ ] Send method.
+	- [x] Clone method.
+	- [x] Delete method.
+	- [x] Send method.
 - [ ] HTTP Transport?
+- [ ] Functions.
+	- [x] Rename.
+	- [x] Clone.
+	- [ ] Clear.
+	- [x] Delete.
 
 ## Methods
 - [x] Send. Standard Castoe Logger method to send to a file or console.
@@ -34,7 +38,7 @@ All To Do Items can be found in here. Those items are seperated in different cat
 ## Syntax
 ```javascript
 
-const castoeFile = new CastoeLogger.File({
+const castoeFile = new CastoeLogger.Transports.File({
 	file: 'file.txt',
 	automatic: true,
 	overwrite: true,
@@ -43,7 +47,7 @@ const castoeFile = new CastoeLogger.File({
 
 castoeFile.send('Something to send.');
 
-const castoeConsole = new CastoeLogger.Console({
+const castoeConsole = new CastoeLogger.Transports.Console({
 	name: 'Castoe Console',
 	showType: false,
 	traceFile: true

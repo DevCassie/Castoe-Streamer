@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 /**
- * Core clone method exposed to Castoe File Transport.
+ * Core clone function.
  * @param {String} file - Which file needs to be cloned?
  * @param {String} destination - Where does the backup file needs to be cloned?
  * @returns {undefined}

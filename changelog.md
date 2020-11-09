@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 9-11-2020
+
+<br />
+
+## Added
+- Documentation
+	- Added a documentation base documenation file.
+	- Added the Functions documentation files.
+	- Added the Transports documenation files.
+
 ## V1.0.0 - 8-11-2020
 
 <br />

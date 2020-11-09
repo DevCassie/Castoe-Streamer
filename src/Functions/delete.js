@@ -1,7 +1,7 @@
 const { unlink } = require('fs');
 
 /**
- * Core delete method exposed to Castoe File Transport.
+ * Core delete function
  * @param {String} file - Which file needs to be deleted?
  * @returns {undefined}
  */

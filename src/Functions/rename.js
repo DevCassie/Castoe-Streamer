@@ -1,8 +1,9 @@
 const { rename } = require('fs');
 
 /**
- * Core delete method exposed to Castoe File Transport.
- * @param {String} file - Which file needs to be deleted?
+ * Core rename function.
+ * @param {String} oldName - Which file needs to be renamed?
+ * @param {String} newName - The new name of the file.
  * @returns {undefined}
  */
 module.exports = function Rename(oldName, newName) {
