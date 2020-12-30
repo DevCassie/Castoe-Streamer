@@ -134,7 +134,6 @@ module.exports = class CastoeConsole extends Transform {
 		if (callback) {
 			callback();
 		}
-
 		return;
 	}
 

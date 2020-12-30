@@ -43,5 +43,12 @@ const castoeConsole = new castoeStreamer.Transports.Console({
 	traceFile: true
 });
 
+// Input will be send to the console
 castoeConsole.send('This gets send to the console.');
+
+// Expected output:
+// This gets send to the console.
+
+// Or to clear the console output. Simply do this:
+castoeConsole.clear();
 ```

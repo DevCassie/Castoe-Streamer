@@ -29,5 +29,5 @@ const castoeStreamer = require("castoe-streamer");
 const castoeConsole = new castoeStreamer.Transports.Console();
 
 // For the Functions
-castoeStreamer.Functions.delete('./some/file');
+castoeStreamer.Functions.delete('./some/file.txt');
 ```

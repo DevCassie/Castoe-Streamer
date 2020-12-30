@@ -7,5 +7,3 @@ const castoeConsole = new castoeStreamer.Transports.Console({
 });
 
 castoeConsole.send('Testing 123');
-
-castoeConsole.clear();

@@ -9,10 +9,22 @@ const asyncSeries = require('async-series');
 const tailFile = require('../lib/tailFile.js');
 
 /**
- * @type {Console}
+ * @typedef CastoeFileOptions
+ * @property {String?} [name]
+ * @property {String?} [file]
+ * @property {String?} [dirname]
+ * @property {Number?} [maxsize]
+ * @property {Boolean?} [zippedArchive]
+ * @property {Boolean?} [automatic]
+ * @property {Number?} [maxFiles]
+ * @property {Boolean?} [overwrite]
+ */
+
+/**
+ * @type {File}
  * @extends {Transform}
  */
-module.exports = class CastoeConsole extends Transform {
+module.exports = class CastoeFile extends Transform {
 	/**
    * Constructor function for the Console transport object responsible for
    * persisting log messages and metadata to a terminal or TTY.
@@ -22,6 +34,9 @@ module.exports = class CastoeConsole extends Transform {
 		super(options);
 
 		// Expose the name of this Transport on the prototype
+		/**
+		 * @type {String}
+		 */
 		this.name = options.name || 'Castoe File';
 
 		/* Helper function which throws an Error in the event that any of the rest of the arguments is present in options. */
@@ -44,7 +59,13 @@ module.exports = class CastoeConsole extends Transform {
 			throwIf('file or dirname', 'stream');
 			this._basename = this.file = options.file ? path.basename(options.file) : 'castoe.log';
 
+			/**
+			 * @type {String}
+			 */
 			this.dirname = options.dirname || path.dirname(options.file);
+			/**
+			 * @type {Object}
+			 */
 			this.options = options.options || { flags: 'a' };
 		} else if (options.stream) {
 			throwIf('stream', 'file', 'maxsize');
@@ -56,13 +77,34 @@ module.exports = class CastoeConsole extends Transform {
 			throw new Error('Can\'t log to file without a file or stream.');
 		}
 
+		/**
+		 * @type {Number}
+		 */
 		this.maxsize = options.maxsize || null;
+		/**
+		 * @type {Boolean}
+		 */
 		this.rotationFormat = options.rotationFormat || false;
+		/**
+		 * @type {Boolean}
+		 */
 		this.zippedArchive = options.zippedArchive || false;
+		/**
+		 * @type {Number}
+		 */
 		this.maxFiles = options.maxFiles || null;
 		this.eol = options.eol || os.EOL;
+		/**
+		 * @type {Boolean}
+		 */
 		this.tailable = options.tailable || false;
+		/**
+		 * @type {Boolean}
+		 */
 		this.automatic = options.automatic || false;
+		/**
+		 * @type {Boolean}
+		 */
 		this.overwrite = options.overwrite || false;
 
 		/* Internal state variables representing the number of files this instance has created and the current size in bytes of the current log file. */
@@ -94,7 +136,8 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Core logging method exposed to Castoe Logger.
 	 * @param {*} info - Input for the log.
-	 * @param {*} callback - Callback function.
+	 * @param {Function} callback - Callback function.
+	 * @returns {Promise<void>}
 	 */
 	send(info, callback = () => {}) {
 		if (this.silent) {
@@ -217,7 +260,7 @@ module.exports = class CastoeConsole extends Transform {
 				return this.emit('error'. error);
 			}
 
-			debug('Statistics done: %S { size: %s }', this.file, size);
+			console.debug('Statistics done: %S { size: %s }', this.file, size);
 			this._size = size;
 			this._dest = this._createStream(this._stream);
 			this._opening = false;
@@ -243,14 +286,14 @@ module.exports = class CastoeConsole extends Transform {
 
 		fs.stat(fullpath, (error, stat) => {
 			if (error && error.code === 'ENOENT') {
-				debug('ENOENT succes on', fullpath);
+				console.error('ENOENT succes on', fullpath);
 				/* Update internally tracked file with the new target name. */
 				this.file = target;
 				return callback(null, 0);
 			}
 
 			if (error) {
-				debug(`Error: ${error.code} ${fullpath}`);
+				console.error(`Error: ${error.code} ${fullpath}`);
 				return callback(error);
 			}
 
@@ -289,6 +332,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * Check if a new file needs to be created.
 	 * @param {number} size 
 	 * @returns {undefined}
+	 * @private
 	 */
 	_needsNewFile(size) {
 		size = size || this._size;
@@ -299,6 +343,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * Emits the error event.
 	 * @param {Error} error
 	 * @returns {undefined}
+	 * @private
 	 */
 	_onError(error) {
 		this.emit('error', error);
@@ -356,10 +401,10 @@ module.exports = class CastoeConsole extends Transform {
 		const fullpath = path.join(this.dirname, this.file);
 
 		const dest = fs.createWriteStream(fullpath, this.options)
-			.on('error', err => debug(err))
-			.on('close', () => debug('FileStream closed.', dest.path, dest.bytesWritten))
+			.on('error', err => console.error(err))
+			.on('close', () => console.debug('FileStream closed.', dest.path, dest.bytesWritten))
 			.on('open', () => {
-				debug('File opened.', fullpath);
+				console.debug('File opened.', fullpath);
 				this.emit('open', fullpath);
 				source.pipe(dest);
 
@@ -490,6 +535,8 @@ module.exports = class CastoeConsole extends Transform {
 
 	/**
 	 * Core delete method exposed to Castoe File Transport.
+	 * @example castoeFile.delete();
+	 * @returns {Promise<void>}
 	 */
 	delete() {
 		const target = this._getFile();
@@ -508,7 +555,7 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Private method to convert a file to a backup file.
 	 * @param {String} file - Which file should be backed up?
-	 * @returns {undefined}
+	 * @returns {Promise<void>}
 	 * @private
 	 */
 	_automatedBackup(file) {
@@ -557,13 +604,14 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Core clone method exposed to Castoe File Transport.
 	 * @param {String} file - Which file needs to be cloned?
-	 * @param {String} destination - Where does the backup file needs to be cloned?
-	 * @returns {undefined}
+	 * @param {String} cloneFile - Where does the backup file needs to be cloned?
+	 * @example castoeFile.clone(file, cloneFile);
+	 * @returns {Promise<void>}
 	 */
-	clone(file, destination) {
-		destination = `Backup_${file}`;
+	clone(file, cloneFile) {
+		cloneFile = `Backup_${file}`;
 
-		fs.copyFile(file, destination, (error) => {
+		fs.copyFile(file, cloneFile, (error) => {
 			if (error) return console.error('Error while cloning a file. %s', file);
 		});
 	}

@@ -25,7 +25,7 @@ All To Do Items can be found in here. Those items are seperated in different cat
 - [ ] Functions.
 	- [x] Rename.
 	- [x] Clone.
-	- [ ] Clear.
+	- [x] Clear.
 	- [x] Delete.
 
 ## Methods

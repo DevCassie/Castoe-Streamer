@@ -1,8 +1,6 @@
-const fs = require('fs');
-
 /**
  * Core clear function
- * @param {*} stream 
+ * @param {GenericTransformStream} stream 
  */
 module.exports = function clear(stream) {
 	try {
