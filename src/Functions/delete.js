@@ -3,7 +3,7 @@ const { unlink } = require('fs');
 /**
  * Core delete function
  * @param {String} file - Which file needs to be deleted?
- * @returns {undefined}
+ * @returns {Promise<void>}
  */
 module.exports = function(file) {
 	try {

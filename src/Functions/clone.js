@@ -2,16 +2,16 @@ const fs = require('fs');
 
 /**
  * Core clone function.
- * @param {String} file - Which file needs to be cloned?
- * @param {String} destination - Where does the backup file needs to be cloned?
- * @returns {undefined}
+ * @param {String} oldFile - Which file needs to be cloned?
+ * @param {String} newFile - Where does the backup file needs to be cloned?
+ * @returns {Promise<void>}
  */
-module.exports = function clone(file, destination) {
-	destination = `Backup_${file}`;
+module.exports = function clone(oldFile, newFile) {
+	newFile = `Backup_${oldFile}`;
 
-	fs.copyFile(file, destination, (error) => {
+	fs.copyFile(oldFile, newFile, (error) => {
 		if (error) {
-			throw new Error('Error while cloning a file. %s', file);
+			throw new Error('Error while cloning a file. %s', oldFile);
 		}
 	});
 }

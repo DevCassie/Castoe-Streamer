@@ -1,6 +1,7 @@
 /**
  * Core clear function
- * @param {GenericTransformStream} stream 
+ * @param {GenericTransformStream} stream
+ * @returns {Promise<void>}
  */
 module.exports = function clear(stream) {
 	try {
