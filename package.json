@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A stream handler package for the Official Castoe Bot.",
   "main": "./src/index.js",
+  "types": "./src/index.d.ts",
   "scripts": {
     "test": "echo Test script is working!",
     "start": "node .",
