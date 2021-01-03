@@ -2,7 +2,6 @@
  * Clears the console stream.
  * @param {GenericTransformStream} stream
  * @returns {Promise<void>}
- * @exports
  */
 module.exports = function Clear(stream) {
 	try {

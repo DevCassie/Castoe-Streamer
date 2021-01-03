@@ -7,7 +7,6 @@ module.exports = class CastoeStream extends Transform {
    	* Constructor function for the Console transport object responsible for
    	* persisting log messages and metadata to a terminal or TTY.
    	* @param {!Object} [options={}] - Options for this instance.
-	* @exports
    	*/
 	constructor(options = {} ) {
 		super(options);
@@ -27,7 +26,6 @@ module.exports = class CastoeStream extends Transform {
 	 * @param {Object} info - What should be logged to the log?
 	 * @param {Function} callback - Callback function.
 	 * @returns {undefined}
-	 * @exports
 	 */
 	send(info, callback) {
 		setImmediate(() => this.emit('logged', info));

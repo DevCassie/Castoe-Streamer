@@ -150,7 +150,6 @@ module.exports = class CastoeFile extends Transform {
 	 * @param {*} info - Input for the log.
 	 * @param {Function} callback - Callback function.
 	 * @returns {Promise<void>}
-	 * @exports
 	 */
 	send(info, callback = () => {}) {
 		if (this.silent) {
@@ -550,7 +549,6 @@ module.exports = class CastoeFile extends Transform {
 	 * Core delete method exposed to Castoe File Transport.
 	 * @example castoeFile.delete();
 	 * @returns {Promise<void>}
-	 * @exports
 	 */
 	delete() {
 		const target = this._getFile();
@@ -621,7 +619,6 @@ module.exports = class CastoeFile extends Transform {
 	 * @param {String} cloneFile - Where does the backup file needs to be cloned?
 	 * @example castoeFile.clone(file, cloneFile);
 	 * @returns {Promise<void>}
-	 * @exports
 	 */
 	clone(file, cloneFile) {
 		cloneFile = `Backup_${file}`;

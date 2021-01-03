@@ -5,7 +5,6 @@ const fs = require('fs');
  * @param {String} oldFile - Which file needs to be cloned?
  * @param {String} newFile - Where does the backup file needs to be cloned?
  * @returns {Promise<void>}
- * @exports
  */
 module.exports = function Clone(oldFile, newFile) {
 	newFile = `Backup_${oldFile}`;
