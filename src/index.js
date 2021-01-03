@@ -1,11 +1,26 @@
-Object.defineProperty(exports, 'Functions', {
+Object.defineProperty(exports, 'Clone', {
 	enumerable: false,
 	configurable: false,
 	get() {
-		return require('./Functions/index.js');
+		return require('./Functions/index.js').clone;
 	},
-	value: this.Functions
 });
+
+Object.defineProperty(exports, 'Delete', {
+	enumerable: true,
+	configurable: true,
+	get() {
+		return require('./Functions/index.js').delete;
+	}	
+});
+
+Object.defineProperty(exports, 'Rename', {
+	enumerable: true,
+	configurable: true,
+	get() {
+		return require('./Functions/index.js').rename;
+	}	
+})
 
 Object.defineProperty(exports, 'Transports', {
 	configurable: true,
@@ -13,5 +28,4 @@ Object.defineProperty(exports, 'Transports', {
 	get() {
 		return require('./Transports/index.js');
 	},
-	value: this.Transports
 });
