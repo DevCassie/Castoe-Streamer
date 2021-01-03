@@ -5,6 +5,7 @@ const { rename } = require('fs');
  * @param {String} oldName - Which file needs to be renamed?
  * @param {String} newName - The new name of the file.
  * @returns {Promise<void>}
+ * @exports
  */
 module.exports = function Rename(oldName, newName) {
 	try {

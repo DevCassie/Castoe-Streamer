@@ -18,17 +18,19 @@ const tailFile = require('../lib/tailFile.js');
  * @property {Boolean?} [automatic]
  * @property {Number?} [maxFiles]
  * @property {Boolean?} [overwrite]
+ * @exports
  */
 
 /**
  * @type {File}
  * @extends {Transform}
+ * @exports
  */
 module.exports = class CastoeFile extends Transform {
 	/**
    * Constructor function for the Console transport object responsible for
    * persisting log messages and metadata to a terminal or TTY.
-   * @param {!Object} [options={}] - Options for this instance.
+   * @param {CastoeFileOptions} [options] - Options for this instance.
    */	
 	constructor(options = {}) {
 		super(options);
@@ -36,6 +38,7 @@ module.exports = class CastoeFile extends Transform {
 		// Expose the name of this Transport on the prototype
 		/**
 		 * @type {String}
+		 * @exports
 		 */
 		this.name = options.name || 'Castoe File';
 
@@ -61,10 +64,12 @@ module.exports = class CastoeFile extends Transform {
 
 			/**
 			 * @type {String}
+			 * @exports
 			 */
 			this.dirname = options.dirname || path.dirname(options.file);
 			/**
 			 * @type {Object}
+			 * @exports
 			 */
 			this.options = options.options || { flags: 'a' };
 		} else if (options.stream) {
@@ -79,31 +84,38 @@ module.exports = class CastoeFile extends Transform {
 
 		/**
 		 * @type {Number}
+		 * @exports
 		 */
 		this.maxsize = options.maxsize || null;
 		/**
 		 * @type {Boolean}
+		 * @exports
 		 */
 		this.rotationFormat = options.rotationFormat || false;
 		/**
 		 * @type {Boolean}
+		 * @exports
 		 */
 		this.zippedArchive = options.zippedArchive || false;
 		/**
 		 * @type {Number}
+		 * @exports
 		 */
 		this.maxFiles = options.maxFiles || null;
 		this.eol = options.eol || os.EOL;
 		/**
 		 * @type {Boolean}
+		 * @exports
 		 */
 		this.tailable = options.tailable || false;
 		/**
 		 * @type {Boolean}
+		 * @exports
 		 */
 		this.automatic = options.automatic || false;
 		/**
 		 * @type {Boolean}
+		 * @exports
 		 */
 		this.overwrite = options.overwrite || false;
 
@@ -138,6 +150,7 @@ module.exports = class CastoeFile extends Transform {
 	 * @param {*} info - Input for the log.
 	 * @param {Function} callback - Callback function.
 	 * @returns {Promise<void>}
+	 * @exports
 	 */
 	send(info, callback = () => {}) {
 		if (this.silent) {
@@ -537,6 +550,7 @@ module.exports = class CastoeFile extends Transform {
 	 * Core delete method exposed to Castoe File Transport.
 	 * @example castoeFile.delete();
 	 * @returns {Promise<void>}
+	 * @exports
 	 */
 	delete() {
 		const target = this._getFile();
@@ -607,6 +621,7 @@ module.exports = class CastoeFile extends Transform {
 	 * @param {String} cloneFile - Where does the backup file needs to be cloned?
 	 * @example castoeFile.clone(file, cloneFile);
 	 * @returns {Promise<void>}
+	 * @exports
 	 */
 	clone(file, cloneFile) {
 		cloneFile = `Backup_${file}`;

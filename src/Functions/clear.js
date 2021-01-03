@@ -1,9 +1,10 @@
 /**
- * Core clear function
+ * Clears the console stream.
  * @param {GenericTransformStream} stream
  * @returns {Promise<void>}
+ * @exports
  */
-module.exports = function(stream) {
+module.exports = function Clear(stream) {
 	try {
 		if (stream === process.stdout) {
 			process.stdout.cursorTo(0,0);

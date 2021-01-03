@@ -14,6 +14,7 @@ const { levels } = require('../Configuration/index.js');
  * @property {Boolean?} [traceFile=false] Wether or not the console should return the file it's called from.
  * @property {Boolean?} [showType=false] Should the output show which type the input is?
  * @property {CastoeConsoleColorOptions?} [colors={}] Which colours should be what?
+ * @exports
  */
 
 /**
@@ -25,20 +26,21 @@ const { levels } = require('../Configuration/index.js');
  * @property {String} [object='yellow'] Which color for the object type?
  * @property {String} [string='white'] Which color for the string type?
  * @property {String} [symbol='gray'] Which color for the symbol type?
+ * @exports
  */
 
 /**
  * @type {Console}
  * @extends {Transform}
+ * @example new Transports.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cyan', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray', date: 'LTS', showType: true}});
  * @returns {undefined}
+ * @exports
  */
 module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Constructor function for the Console transport object responsible for
 	 * persisting log messages and metadata to a terminal or TTY.
-	 * @param {CastoeConsoleOptions} [options={}] - Options for this instance.
-	 * @example new Transports.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cyan', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray', date: 'LTS', showType: true}
-		});
+	 * @param {CastoeConsoleOptions} [options] - Options for this instance.
 	 */
 	constructor(options) {
 		super(options);
@@ -46,18 +48,22 @@ module.exports = class CastoeConsole extends Transform {
 		this.options = options;
 		/**
 		 * @type {String}
+		 * @exports
 		 */
 		this.name = options.name || 'Castoe Console';
 		/**
 		 * @type {String}
+		 * @exports
 		 */
 		this.date = options.date;
 		/**
 		 * @type {Boolean}
+		 * @exports
 		 */
 		this.traceFile = options.traceFile || false;
 		/**
 		 * @type {Boolean}
+		 * @exports
 		 */
 		this.showType = options.showType || false;
 		this.stackIndex = options.stackIndex || 1;
@@ -67,11 +73,12 @@ module.exports = class CastoeConsole extends Transform {
 
 		this.setMaxListeners(30);
 		/**
-		 * @type {Object} 
+		 * @type {CastoeConsoleColorOptions} 
+		 * @exports
 		 */
 		this.colors = options.colors;
 
-		if (options.colors) {
+		if (this.colors) {
 			if (options.colors.bigint && options.colors.boolean && options.colors.function && options.colors.number && options.colors.object && options.colors.string && options.colors.symbol) {
 				colors.setTheme({
 					bigint: options.colors.bigint,
@@ -86,7 +93,7 @@ module.exports = class CastoeConsole extends Transform {
 				throw new Error('options.colors needs to be an Object like this:\n{bigint: String, boolean: String, function: String, number: String, object: String,symbol: String}');
 			}
 
-			/* 
+			/* Testing
 			const keys = Object.keys(options.colors);
 			console.log(keys);
 			const values = Object.values(options.colors);
@@ -119,6 +126,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * @param {*} info - Input for the log.
 	 * @param {Function} callback - Callback function.
 	 * @returns {undefined}
+	 * @exports
 	 */
 	send(info, callback) {
 		setImmediate(() => this.emit('logged', info));
@@ -158,6 +166,11 @@ module.exports = class CastoeConsole extends Transform {
 		return;
 	}
 
+	/**
+	 * Core clear function of the CastoeConsole
+	 * @returns {Promise<void>}
+	 * @exports
+	 */
 	clear() {
 		process.stdout.cursorTo(0,0);
 		process.stdout.clearLine(0);
