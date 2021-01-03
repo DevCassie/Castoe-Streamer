@@ -4,10 +4,7 @@
  */
 const castoe = exports;
 
-/**
- * @type {GenericTransformStream}
- */
-castoe.Transports = require('./Transports/');
+castoe.Transports = require('./Transports/index.js');
 /**
  * Exposes version.
  * @type {String}
@@ -21,4 +18,4 @@ castoe.author = require('../package.json').author;
 /**
  * @type {Function}
  */
-castoe.Functions = require('./Functions/');
+castoe.Functions = require('./Functions/index.js');
