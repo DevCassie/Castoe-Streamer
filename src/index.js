@@ -11,6 +11,5 @@ Object.defineProperty(exports, 'Transports', {
 	enumerable: true,
 	get() {
 		return require('./Transports/index.js');
-	},
-	writable: true
+	}
 });
