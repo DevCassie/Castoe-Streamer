@@ -1,23 +1,9 @@
-Object.defineProperty(exports, 'CastoeConsole', {
-	configurable: true,
-	enumerable: true,
-	get() {
-		return require('./ConsoleTransport');
-	}
-});
+/**
+ * Setup for exposing.
+ * @type {Object}
+ */
+const castoe = exports;
 
-Object.defineProperty(exports, 'CastoeStream', {
-	configurable: true,
-	enumerable: true,
-	get() {
-		return require('./stream');
-	}	
-});
-
-Object.defineProperty(exports, 'CastoeFile', {
-	configurable: true,
-	enumerable: true,
-	get() {
-		return require('./FileTransport');	
-	}
-});
+castoe.CastoeConsole = require('./ConsoleTransport.js');
+castoe.CastoeStream = require('./StreamTransport.js');
+castoe.CastoeFile = require('./FileTransport.js');
