@@ -1,9 +1,9 @@
-/**
- * Setup for exposing.
- * @type {Object}
- */
-const castoe = exports;
+// const CastoeConsole = require('./ConsoleTransport.js');
+// const CastoeStream = require('./StreamTransport.js');
+// const CastoeFile = require('./FileTransport.js');
 
-castoe.CastoeConsole = require('./ConsoleTransport.js');
-castoe.CastoeStream = require('./StreamTransport.js');
-castoe.CastoeFile = require('./FileTransport.js');
+module.exports = {
+	CastoeFile: require('./FileTransport.js'),
+	CastoeStream: require('./StreamTransport.js'),
+	CastoeConsole: require('./ConsoleTransport.js'),
+}
