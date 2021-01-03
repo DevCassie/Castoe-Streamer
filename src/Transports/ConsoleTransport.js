@@ -40,7 +40,7 @@ module.exports = class CastoeConsole extends Transform {
 	 * @example new Transports.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cyan', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray', date: 'LTS', showType: true}
 		});
 	 */
-	constructor(options = {}) {
+	constructor(options) {
 		super(options);
 
 		this.options = options;

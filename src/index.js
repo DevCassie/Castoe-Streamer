@@ -12,15 +12,15 @@ const castoe = exports;
 /**
  * @type {CastoeFile}
  */
-castoe.CastoeFile = require('./Transports/FileTransport.js');
+castoe.CastoeFile = require('./Transports/FileTransport');
 /**
  * @type {CastoeStream}
  */
-castoe.CastoeStream = require('./Transports/StreamTransport.js');
+castoe.CastoeStream = require('./Transports/StreamTransport');
 /**
  * @type {CastoeConsole}
  */
-castoe.CastoeConsole = require('./Transports/ConsoleTransport.js');
+castoe.CastoeConsole = require('./Transports/ConsoleTransport');
 /**
  * Exposes version.
  * @type {String}
@@ -34,4 +34,4 @@ castoe.author = require('../package.json').author;
 /**
  * @type {Function}
  */
-castoe.Functions = require('./Functions/index.js');
+castoe.Functions = require('./Functions/index');

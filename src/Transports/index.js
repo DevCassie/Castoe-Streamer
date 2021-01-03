@@ -1,11 +1,7 @@
+/* eslint-disable no-unused-vars */
 const CastoeConsole = require('./ConsoleTransport.js');
+const CastoeFile = require('./FileTransport.js');
 const CastoeStream = require('./StreamTransport.js');
-
-// module.exports = {
-// 	CastoeFile: require('./FileTransport.js'),
-// 	CastoeStream: require('./StreamTransport.js'),
-// 	CastoeConsole: require('./ConsoleTransport.js'),
-// }
 
 /**
  * @type {CastoeConsole}
@@ -14,7 +10,7 @@ Object.defineProperty(exports, 'CastoeConsole', {
 	configurable: true,
 	enumerable: true,
 	get() {
-		return require('./ConsoleTransport.js');
+		return require('./ConsoleTransport');
 	}	
 });
 
@@ -25,14 +21,17 @@ Object.defineProperty(exports, 'CastoeStream', {
 	configurable: true,
 	enumerable: true,
 	get() {
-		return require('./StreamTransport.js');
+		return require('./StreamTransport');
 	}
 });
 
+/**
+ * @type {CastoeFile}
+ */
 Object.defineProperty(exports, 'CastoeFile', {
 	configurable: true,
 	enumerable: true,
 	get() {
-		return require('./FileTransport.js');
+		return require('./FileTransport');
 	}
 });
