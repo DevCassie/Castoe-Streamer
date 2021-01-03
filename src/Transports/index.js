@@ -1,7 +1,4 @@
-/**
- * @type {Console}
- */
-Object.defineProperty(exports, 'Console', {
+Object.defineProperty(exports, 'CastoeConsole', {
 	configurable: true,
 	enumerable: true,
 	get() {
@@ -9,10 +6,7 @@ Object.defineProperty(exports, 'Console', {
 	}
 });
 
-/**
- * @type {Stream}
- */
-Object.defineProperty(exports, 'Stream', {
+Object.defineProperty(exports, 'CastoeStream', {
 	configurable: true,
 	enumerable: true,
 	get() {
@@ -20,7 +14,7 @@ Object.defineProperty(exports, 'Stream', {
 	}	
 });
 
-Object.defineProperty(exports, 'File', {
+Object.defineProperty(exports, 'CastoeFile', {
 	configurable: true,
 	enumerable: true,
 	get() {

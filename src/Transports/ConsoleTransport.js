@@ -30,6 +30,7 @@ const { levels } = require('../Configuration/index.js');
 /**
  * @type {Console}
  * @extends {Transform}
+ * @returns {undefined}
  */
 module.exports = class CastoeConsole extends Transform {
 	/**

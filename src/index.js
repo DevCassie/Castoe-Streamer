@@ -3,7 +3,8 @@ Object.defineProperty(exports, 'Functions', {
 	configurable: false,
 	get() {
 		return require('./Functions/index.js');
-	}
+	},
+	value: this.Functions
 });
 
 Object.defineProperty(exports, 'Transports', {
@@ -11,5 +12,6 @@ Object.defineProperty(exports, 'Transports', {
 	enumerable: true,
 	get() {
 		return require('./Transports/index.js');
-	}
+	},
+	value: this.Transports
 });
