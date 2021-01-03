@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 03-01-2021
+
+<br />
+
+## Added
+- JSDOC
+  - ConsoleTransport
+
 ## V1.0.0 - 9-11-2020
 
 <br />

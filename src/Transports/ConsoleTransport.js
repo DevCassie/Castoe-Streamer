@@ -8,6 +8,26 @@ const colors = require('colors/safe');
 const { levels } = require('../Configuration/index.js');
 
 /**
+ * @typedef CastoeConsoleOptions
+ * @property {String?} [name='Castoe Console'] Name of the console.
+ * @property {String?} [date='LTS'] Format for the date.
+ * @property {Boolean?} [traceFile=false] Wether or not the console should return the file it's called from.
+ * @property {Boolean?} [showType=false] Should the output show which type the input is?
+ * @property {CastoeConsoleColorOptions?} [colors={}] Which colours should be what?
+ */
+
+/**
+ * @typedef CastoeConsoleColorOptions
+ * @property {String} [bigint='green'] Which color for the bigint type?
+ * @property {String} [boolean='cyan'] Which color for the boolean type?
+ * @property {String} [function='magenta'] Which color for the function type?
+ * @property {String} [number='blue'] Which color for the number type?
+ * @property {String} [object='yellow'] Which color for the object type?
+ * @property {String} [string='white'] Which color for the string type?
+ * @property {String} [symbol='gray'] Which color for the symbol type?
+ */
+
+/**
  * @type {Console}
  * @extends {Transform}
  */
@@ -15,8 +35,8 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Constructor function for the Console transport object responsible for
 	 * persisting log messages and metadata to a terminal or TTY.
-	 * @param {!Object} [options={}] - Options for this instance.
-	 * @example new Logger.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cya', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray', date: 'LTS', showType: true}
+	 * @param {CastoeConsoleOptions} [options={}] - Options for this instance.
+	 * @example new Transports.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cyan', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray', date: 'LTS', showType: true}
 		});
 	 */
 	constructor(options = {}) {
@@ -96,7 +116,7 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Core logging method exposed to Castoe Console Logger.
 	 * @param {*} info - Input for the log.
-	 * @param {*} callback - Callback function.
+	 * @param {Function} callback - Callback function.
 	 * @returns {undefined}
 	 */
 	send(info, callback) {
