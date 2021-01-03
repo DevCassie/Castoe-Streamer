@@ -1,31 +1,24 @@
-Object.defineProperty(exports, 'Clone', {
-	enumerable: false,
-	configurable: false,
-	get() {
-		return require('./Functions/index.js').clone;
-	},
-});
+/**
+ * Setup for exposing.
+ * @type {Object}
+ */
+const castoe = exports;
 
-Object.defineProperty(exports, 'Delete', {
-	enumerable: true,
-	configurable: true,
-	get() {
-		return require('./Functions/index.js').delete;
-	}	
-});
-
-Object.defineProperty(exports, 'Rename', {
-	enumerable: true,
-	configurable: true,
-	get() {
-		return require('./Functions/index.js').rename;
-	}	
-})
-
-Object.defineProperty(exports, 'Transports', {
-	configurable: true,
-	enumerable: true,
-	get() {
-		return require('./Transports/index.js');
-	},
-});
+/**
+ * @type {GenericTransformStream}
+ */
+castoe.Transports = require('./Transports/');
+/**
+ * Exposes version.
+ * @type {String}
+ */
+castoe.version = require('../package.json').version;
+/**
+ * Exposes the name of the creator.
+ * @type {String}
+ */
+castoe.author = require('../package.json').author;
+/**
+ * @type {Function}
+ */
+castoe.Functions = require('./Functions/');
