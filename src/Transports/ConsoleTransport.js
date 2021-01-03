@@ -9,8 +9,8 @@ const { levels } = require('../Configuration/index.js');
 
 /**
  * @typedef CastoeConsoleOptions
- * @property {String?} [name='Castoe Console'] Name of the console.
- * @property {String?} [date='LTS'] Format for the date.
+ * @property {String?} [name=''] Name of the console.
+ * @property {String?} [date=''] Format for the date.
  * @property {Boolean?} [traceFile=false] Wether or not the console should return the file it's called from.
  * @property {Boolean?} [showType=false] Should the output show which type the input is?
  * @property {CastoeConsoleColorOptions?} [colors={}] Which colours should be what?
