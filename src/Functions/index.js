@@ -1,10 +1,6 @@
-/**
- * Setup for exposing.
- * @type {Object}
- */
-const castoe = exports;
-
-castoe.Clone = require('./Clone.js');
-castoe.Delete = require('./Delete.js');
-castoe.Rename = require('./Rename.js');
-castoe.Clear = require('./Clear.js');
+module.exports = {
+	Clone: require('./Clone.js'),
+	Delete: require('./Delete.js'),
+	Rename: require('./Rename.js'),
+	Clear: require('./Clear.js')
+}

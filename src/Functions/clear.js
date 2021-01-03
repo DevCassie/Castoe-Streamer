@@ -3,7 +3,7 @@
  * @param {GenericTransformStream} stream
  * @returns {Promise<void>}
  */
-module.exports = function clear(stream) {
+module.exports = function(stream) {
 	try {
 		if (stream === process.stdout) {
 			process.stdout.cursorTo(0,0);
