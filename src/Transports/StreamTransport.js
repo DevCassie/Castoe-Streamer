@@ -2,11 +2,16 @@ const isStream = require('is-stream');
 const os = require('os');
 const { Transform } = require('stream');
 
+/**
+ * @typedef CastoeStreamOptions
+ * @property {NodeJS.ReadableStream} [stream]
+ */
+
 module.exports = class CastoeStream extends Transform {
 	/**
    	* Constructor function for the Console transport object responsible for
    	* persisting log messages and metadata to a terminal or TTY.
-   	* @param {!Object} [options={}] - Options for this instance.
+   	* @param {CastoeStreamOptions} [options] - Options for this instance.
    	*/
 	constructor(options = {} ) {
 		super(options);

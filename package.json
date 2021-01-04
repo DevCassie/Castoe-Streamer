@@ -23,6 +23,7 @@
     "moment": "^2.29.0"
   },
   "devDependencies": {
+    "babel": "^6.23.0",
     "nodemon": "^2.0.4"
   }
 }
