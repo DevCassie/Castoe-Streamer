@@ -1,11 +1,12 @@
 import * as CastoeTransports from './Transports/index';
 
-declare namespace castoeStreamer {
-  let Transports: CastoeTransports;
-  
+namespace CastoeStreamer {
   let version: string;
   let author: string;
-  let Transports: transports;
+
+  let CastoeConsole: CastoeTransports.CastoeConsole;
+  let CastoeFile: CastoeTransports.CastoeFile;
+  let CastoeStream: CastoeTransports.CastoeStream;
 }
 
-export = CastoeTransports;
+export = CastoeStreamer;
