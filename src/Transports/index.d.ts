@@ -1,86 +1,43 @@
+import * as Options from './Types';
 import * as Transport from 'stream';
 
-declare namespace CastoeStreamer {
-	interface CastoeConsoleTransportOptions extends Transport.TransportStreamOptions {
-		eol?: string;
-		name: string;
-		date?: string;
-		traceFile?: boolean;
-		showType?: boolean;
-		colors?: CastoeConsoleColorOptions;
-	}
-	
-	interface CastoeConsoleColorOptions extends Object {
-		bigint: string;
-		boolean: string;
-		function: string;
-		number: string;
-		object: string;
-		string: string;
-		symbol: string;
-	}
-	
-	interface CastoeConsoleTransportInstance extends Transport {
-		name: string;
-		traceFile: boolean;
-		date: string;
-		showType: boolean;
-		colors: CastoeConsoleColorOptions;
-		eol: string;
-	
-		new(options?: CastoeConsoleTransportOptions): CastoeConsoleTransportInstance;
-	}
-	
-	interface CastoeFileTransportOptions extends Transport.TransportStreamOptions {
-		name?: string;
-		filename?: string;
-		file?: string;
-		dirname?: string;
-		options?: object;
-		maxsize?: number;
-		stream?: NodeJS.WritableStream;
-		rotationFormat?: Function;
-		zippedArchive?: boolean;
-		maxFiles?: number;
-		eol?: string;
-		tailable?: boolean;
-	}
-	
-	interface CastoeFileTransportInstance extends Transport {
-		name: string;
-		filename: string;
-		dirname: string;
-		options: object;
-		maxsize: number | null;
-		rotationFormat: Function | boolean;
-		zippedArchive: boolean;
-		maxFiles: number | null;
-		eol: string;
-		tailable: boolean;
-		
-		new(options?: CastoeFileTransportOptions): CastoeFileTransportInstance;
-	}
-	
-	interface CastoeStreamTransportOptions extends Transport.TransportStreamOptions {
-		stream: NodeJS.WritableStream;
-		eol?: string;
-	}
-	
-	interface CastoeStreamTransportInstance extends Transport {
-		eol: string;
-		
-		new(options?: CastoeStreamTransportOptions): CastoeStreamTransportInstance;
-	}
-	
-	interface Transports {
-		CastoeFile: CastoeFileTransportInstance;
-		CastoeFileOptions: CastoeFileTransportOptions;
-		CastoeConsole: CastoeConsoleTransportInstance;
-		CastoeConsoleOptions: CastoeConsoleTransportOptions;
-		CastoeStream: CastoeStreamTransportInstance;
-		CastoeStreamOptions: CastoeStreamTransportOptions;
-	}
+declare namespace castoeStreamer {
+  interface CastoeConsole extends Transport {
+    name: string;
+    eol: string;
+    
+    new(options?: Options.CastoeConsoleOptions): CastoeConsole;
+  }
+  
+  interface CastoeFile extends Transport {
+    name: string;
+    filename: string;
+    dirname: string;
+    options: object;
+    maxsize: number | null;
+    rotationFormat: Function | null;
+    maxFiles: number;
+    eol: string;
+    tailable: boolean;
+    
+    new(options?: Options.CastoeFileOptions): CastoeFile;
+  }
+  
+  interface CastoeStream extends Transport {
+    eol: string;
+    
+    new(options?: Options.CastoeStreamOptions): CastoeStream;
+  }
+  
+  interface Transports {
+    CastoeConsole: CastoeConsole
+    CastoeConsoleOptions: Options.CastoeConsoleOptions
+    CastoeFile: CastoeFile
+    CastoeFileOptions: Options.CastoeFileOptions
+    CastoeStream: CastoeStream
+    CastoeStreamOptions: Options.CastoeStreamOptions
+  }
 }
 
-declare const castoestreamer: CastoeStreamer.Transports;
-export = castoestreamer;
+declare const castoeStreamer: castoeStreamer.Transports;
+export = castoeStreamer;
