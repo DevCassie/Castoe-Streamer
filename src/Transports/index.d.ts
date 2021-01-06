@@ -7,6 +7,8 @@ declare namespace castoeStreamer {
     eol: string;
     
     new(options?: Options.CastoeConsoleOptions): CastoeConsole;
+
+    send(input: any): CastoeConsole;
   }
   
   interface CastoeFile extends Transport {
