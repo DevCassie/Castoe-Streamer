@@ -1,7 +1,7 @@
 import * as Options from './Types';
 import * as Transport from 'stream';
 
-declare namespace castoeStreamer {
+declare namespace castoestreamer {
   interface CastoeConsole extends Transport {
     name: string;
     eol: string;
@@ -9,6 +9,8 @@ declare namespace castoeStreamer {
     new(options?: Options.CastoeConsoleOptions): CastoeConsole;
 
     send(input: any): CastoeConsole;
+    
+    clear(): CastoeConsole;
   }
   
   interface CastoeFile extends Transport {
@@ -23,12 +25,22 @@ declare namespace castoeStreamer {
     tailable: boolean;
     
     new(options?: Options.CastoeFileOptions): CastoeFile;
+
+    send(input: any): CastoeFile;
+    
+    clone(file: string, clonedFile: string): CastoeFile;
+    
+    delete(): CastoeFile;
+    
+    close(callback: Function): CastoeFile;
   }
   
   interface CastoeStream extends Transport {
     eol: string;
     
     new(options?: Options.CastoeStreamOptions): CastoeStream;
+    
+    send(input: Object): CastoeStream;
   }
   
   interface Transports {
@@ -41,5 +53,5 @@ declare namespace castoeStreamer {
   }
 }
 
-declare const castoeStreamer: castoeStreamer.Transports;
-export = castoeStreamer;
+declare const castoestreamer: castoestreamer.Transports;
+export = castoestreamer;
