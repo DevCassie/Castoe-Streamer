@@ -32,7 +32,7 @@ module.exports = class CastoeFile extends Transform {
    * persisting log messages and metadata to a terminal or TTY.
    * @param {CastoeFileOptions} [options] - Options for this instance.
    */	
-	constructor(options = {}) {
+	constructor(options) {
 		super(options);
 
 		// Expose the name of this Transport on the prototype

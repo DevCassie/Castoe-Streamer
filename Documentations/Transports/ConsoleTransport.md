@@ -1,21 +1,21 @@
 ## Main import
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Remaining code....
 ```
 
 ## Creating a new Console Transport
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Console transport.
-const castoeConsole = new castoeStreamer.Transports.Console();
+const castoeConsole = new castoeStreamer.CastoeConsole();
 ```
 
 ## Customizing the Console Transport
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Console transport.
-const castoeConsole = new castoeStreamer.Transports.Console({
+const castoeConsole = new castoeStreamer.CastoeConsole({
 	name: 'Console Castoe',
 	traceFile: true,
 	date: 'LTS',
@@ -27,7 +27,8 @@ const castoeConsole = new castoeStreamer.Transports.Console({
 		object: 'cyan',
 		string: 'gray',
 		symbol: 'red'
-	}
+	},
+  showType: true
 });
 ```
 
@@ -36,9 +37,9 @@ To customize the colors, there isn't a much customizability yet there but the co
 
 ## Using the Console Transport
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Console transport.
-const castoeConsole = new castoeStreamer.Transports.Console({
+const castoeConsole = new castoeStreamer.CastoeConsole({
 	name: 'Console Castoe',
 	traceFile: true
 });
@@ -47,7 +48,8 @@ const castoeConsole = new castoeStreamer.Transports.Console({
 castoeConsole.send('This gets send to the console.');
 
 // Expected output:
-// This gets send to the console.
+[ Castoe Console | 8:54:14 PM | Logger.js:10 | Typeof Object ]    
+This gets send to the console
 
 // Or to clear the console output. Simply do this:
 castoeConsole.clear();

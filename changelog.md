@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 08-01-2020
+
+<br />
+
+## Added
+- Type declaration files.
+  - Implemented Type declaration files to support code editor hinting.
+- Markdowns
+  - Readme.md updated
+- Documentations
+  - ConsoleTransport documentation added
+  - FileTransport documentation added
+  - StreamTransport documentation added
+  - Clear documentation added
+  - Rename documentation added
+
 ## V1.0.0 - 03-01-2021
 
 <br />

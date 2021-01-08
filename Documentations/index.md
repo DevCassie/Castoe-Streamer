@@ -13,11 +13,11 @@ const castoeStreamer = require("castoe-streamer");
 ```
 
 ## Currently implemented Classes & Functions
-* [Transports](./Transports/index.md)
+* Transports
 	* [Console](./Transports/ConsoleTransport.md)
 	* [File](./Transports/FileTransport.md)
 	* [Stream](./Transports/StreamTransport.md)
-* [Functions](./Functions/index.md)
+* Functions
 	* [Clear](./Functions/Clear.md)
 	* [Clone](./Functions/Clone.md)
 	* [Delete](./Functions/Delete.md)
@@ -26,8 +26,10 @@ const castoeStreamer = require("castoe-streamer");
 ## Accessing the Transports or Functions
 ```JavaScript
 // For the Transports
-const castoeConsole = new castoeStreamer.Transports.Console();
+const castoeConsole = new castoeStreamer.CastoeConsole();
 
 // For the Functions
-castoeStreamer.Functions.delete('./some/file.txt');
+castoeStreamer.Delete('./some/file.txt');
 ```
+ 
+To get detailed information about the Transports or Functions. Please go to the documentation of the desired Transport or Function.

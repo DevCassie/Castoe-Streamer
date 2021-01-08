@@ -20,14 +20,14 @@ const castoeStreamer = require('castoestreamer');
 ```JavaScript
 const castoeStreamer = require('castoestreamer');
 // Console transport.
-const castoeConsole = new castoeStreamer.Transports.Console();
+const castoeConsole = new castoeStreamer.CastoeConsole();
 ```
 
 ## Customizing the Console Transport
 ```JavaScript
 const castoeStreamer = require('castoestreamer');
 // Console transport.
-const castoeConsole = new castoeStreamer.Transports.Console({
+const castoeConsole = new castoeStreamer.CastoeConsole({
 	name: 'Console Castoe',
 	traceFile: true,
 	date: 'LTS',
@@ -50,7 +50,7 @@ To customize the colors, there isn't a much customizability yet there but the co
 ```JavaScript
 const castoeStreamer = require('castoestreamer');
 // Console transport.
-const castoeConsole = new castoeStreamer.Transports.Console({
+const castoeConsole = new castoeStreamer.CastoeConsole({
 	name: 'Console Castoe',
 	traceFile: true
 });

@@ -1,6 +1,6 @@
 /**
  * Clears the console stream.
- * @param {GenericTransformStream} stream
+ * @param {NodeJS.ReadWriteStream} stream
  * @returns {Promise<void>}
  */
 module.exports = function Clear(stream) {
