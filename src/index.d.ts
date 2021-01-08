@@ -6,7 +6,7 @@ namespace castoestreamer {
   let author: string;
 
   let CastoeConsole: CastoeTransports.CastoeConsole;
-  // let CastoeFile: CastoeTransports.CastoeFile;
+  let CastoeFile: CastoeTransports.CastoeFile;
   let CastoeStream: CastoeTransports.CastoeStream;
   
   let Clone: CastoeFunctions.Clone;

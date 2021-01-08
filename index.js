@@ -1,9 +1,8 @@
 const castoeStreamer = require('./src/index.js');
+const fs = require('fs');
 
-const castoeConsole = new castoeStreamer.Transports.Console({
-	name: 'Castoe Testing',
-	traceFile: true,
-	showType: true
+const castoeFile = new castoeStreamer.CastoeFile({
+	stream: fs.createWriteStream('castoeLog')
 });
 
-castoeConsole.send('Testing 123');
+castoeFile.write('test');

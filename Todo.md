@@ -14,10 +14,10 @@ All To Do Items can be found in here. Those items are seperated in different cat
 	- [x] Destructure an Object.
 - [x] File Transport.
 	- [x] Options.
-		- [x] File.
-		- [x] Automatic backups.
-		- [x] Overwrite backup file.
-		- [x] Flags.
+		- [ ] File.
+		- [ ] Automatic backups.
+		- [ ] Overwrite backup file.
+		- [ ] Flags.
 	- [x] Clone method.
 	- [x] Delete method.
 	- [x] Send method.
@@ -38,7 +38,7 @@ All To Do Items can be found in here. Those items are seperated in different cat
 ## Syntax
 ```javascript
 
-const castoeFile = new CastoeLogger.Transports.File({
+const castoeFile = new CastoeLogger.CastoeFile({
 	file: 'file.txt',
 	automatic: true,
 	overwrite: true,
@@ -47,7 +47,7 @@ const castoeFile = new CastoeLogger.Transports.File({
 
 castoeFile.send('Something to send.');
 
-const castoeConsole = new CastoeLogger.Transports.Console({
+const castoeConsole = new CastoeLogger.CastoeConsole({
 	name: 'Castoe Console',
 	showType: false,
 	traceFile: true
