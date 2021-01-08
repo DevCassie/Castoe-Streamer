@@ -3,26 +3,26 @@ declare namespace castoestreamer {
     oldFile: string;
     newFile: string;
     
-    clone(oldFile: string, newFile: string): Clone;
+    Clone(oldFile: string, newFile: string): Clone;
   }
   
   interface Clear {
     stream: NodeJS.WritableStream;
   
-    clear(stream: NodeJS.WritableStream): Clear;
+    Clear(stream: NodeJS.WritableStream): Clear;
   }
   
   interface Delete {
     file: string;
     
-    delete(file: string): Delete;
+    Delete(file: string): Delete;
   }
   
   interface Rename {
     oldName: string;
     newName: string;
     
-    rename(oldName: string, newName: string): Rename;
+    Rename(oldName: string, newName: string): Rename;
   }
   
   interface Functions {
