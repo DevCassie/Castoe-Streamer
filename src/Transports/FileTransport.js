@@ -184,7 +184,7 @@ module.exports = class CastoeFile extends Transform {
 
 			let newFileLocation = `${newPath}Backup_${file}`;
 			if (!fs.existsSync(newFileLocation)) {
-				if (this.overwrite === true) {
+				if (this.overwrite === false) {
 					fs.copyFileSync(fullpath, newFileLocation);
 				} else {
 					fs.readdir(newPath, (error, files) => {
@@ -197,7 +197,7 @@ module.exports = class CastoeFile extends Transform {
 					});
 				}
 			} else {
-				if (this.overwrite === true) {
+				if (this.overwrite === false) {
 					fs.copyFileSync(file, newFileLocation);
 				} else {
 					fs.readdir(newPath, (error, files) => {

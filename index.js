@@ -11,13 +11,13 @@ const fs = require('fs');
 const fileTransport = require('./src/Transports/FileTransport.js');
 
 const casFile = new fileTransport({
-	automatic: false,
-	overwrite: false,
+	automatic: true,
+	overwrite: true,
 	dirname: 'Backups',
 	file: 'castoeFile.txt',
 	options: { flags: 'a+' }
 });
 
-// casFile.send('Well this is a suprise');
+casFile.send('Well this is a suprise');
 
-casFile.read((data) => console.debug(data));
+// casFile.read((data) => console.debug(data));
