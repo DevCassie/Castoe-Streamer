@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 09-01-2020
+
+<br />
+
+## Added
+- Transports
+  - FileTransport has been re-made due to multiple errors.
+
+## Changed
+- Markdownds
+  - Changelog.md has been updated.
+- JSON
+  - Package.JSON added keywords.
+
 ## V1.0.0 - 08-01-2020
 
 <br />
