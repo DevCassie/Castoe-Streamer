@@ -10,10 +10,9 @@ const castoeStreamer = require('castoe-streamer');
 // Console transport.
 const castoeFile = new castoeStreamer.CastoeFile({
 	name: 'castoeLog.txt',
-  flags: 'a',
   automatic: true,
   overwrite: false,
-  maxFiles: 2
+  options: { flags: 'a+' }
 });
 
 // Information to send to a file.
@@ -30,7 +29,7 @@ castoeFile.delete();
 castoeFile.clone('newFile.txt');
 // File gets cloned with the content.
 
-// To rename a file, you need to pass in one parameter. That would be the new name of the renamedFile.
-castoeFile.rename('newCastoeLog.txt');
-// File gets renamed to newCastoeLog.txt.
+// To read the files content, all you have to do is use a callback function.
+castoeFile.read((data) => console.debug(data));
+// Data that is inside the castoeFile will be thrown in the console.
 ```

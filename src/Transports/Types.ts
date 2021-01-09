@@ -1,4 +1,5 @@
 import * as NodeJS from 'stream';
+import * as Buffer from 'buffer'
 
 export interface CastoeConsoleOptions {
 	eol?: string;
@@ -20,18 +21,23 @@ export interface CastoeConsoleColorOptions {
 }
 
 export interface CastoeFileOptions {
-	name?: string;
-	filename?: string;
-	file?: string;
-	dirname?: string;
-	options?: object;
-	maxsize?: number;
-	stream?: NodeJS.Writable;
-	rotationFormat?: Function;
-	zippedArchive?: boolean;
-	maxFiles?: number;
-	eol?: string;
-	tailable?: boolean;
+  file: string;
+  dirname?: string;
+  automatic?: boolean;
+  overwrite?: boolean;
+  options?: CastoeFileStreamOptions
+}
+
+export interface CastoeFileStreamOptions {
+  flags?: string;
+  encoding?: string;
+  fd?: number;
+  mode: number;
+  autoClose: boolean;
+  emitClose: boolean;
+  start: number;
+  end: number;
+  highWaterMark: number;
 }
 
 export interface CastoeStreamOptions {

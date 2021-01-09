@@ -1,8 +1,23 @@
 const castoeStreamer = require('./src/index.js');
 const fs = require('fs');
 
-const castoeFile = new castoeStreamer.CastoeFile({
-	stream: fs.createWriteStream('castoeLog')
+// const castoeFile = new castoeStreamer.CastoeFile({
+// 	stream: fs.createWriteStream('castoeLog')
+// });
+
+// castoeFile.write('test');
+
+
+const fileTransport = require('./src/Transports/FileTransport.js');
+
+const casFile = new fileTransport({
+	automatic: false,
+	overwrite: false,
+	dirname: 'Backups',
+	file: 'castoeFile.txt',
+	options: { flags: 'a+' }
 });
 
-castoeFile.write('test');
+// casFile.send('Well this is a suprise');
+
+casFile.read((data) => console.debug(data));

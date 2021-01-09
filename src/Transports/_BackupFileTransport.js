@@ -556,7 +556,7 @@ module.exports = class CastoeFile extends Transform {
 					console.error('Error while unlinking file %s', fullpath);	
 				}
 			});
-		})
+		});
 	}
 
 	/**

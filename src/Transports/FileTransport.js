@@ -1,22 +1,31 @@
 /* eslint-disable no-empty-function */
 const os = require('os');
-const { Transform, PassThrough, Stream } = require('stream'); 
+// eslint-disable-next-line no-unused-vars
+const { Transform, Stream } = require('stream'); 
 const fs = require('fs');
 const path = require('path');
-const zlib = require('zlib');
-const asyncSeries = require('async-series');
-
-const tailFile = require('../lib/tailFile.js');
 
 /**
  * @typedef CastoeFileOptions
  * @property {String?} [file]
  * @property {String?} [dirname]
  * @property {Boolean?} [automatic]
- * @property {Number?} [maxFiles]
  * @property {Boolean?} [overwrite]
- * @property {Object?} [options] 
+ * @property {CastoeWriteStreamOptions?} [options] 
  * @exports
+ */
+
+/**
+ * @typedef CastoeWriteStreamOptions
+ * @property {string} [flags]
+ * @property {BufferEncoding} [encoding]
+ * @property {number} [fd]
+ * @property {number} [mode]
+ * @property {boolean} [autoClose]
+ * @property {boolean} [emitCLose]
+ * @property {number} [start]
+ * @property {number} [end]
+ * @property {number} [highWaterMark]
  */
 
 module.exports = class CastoeFile extends Transform {
@@ -26,28 +35,18 @@ module.exports = class CastoeFile extends Transform {
 	 */
 	constructor(options) {
 		super(options);
-
-		this._stream = new PassThrough();
-		this._stream.setMaxListeners(30);
-
-		this._onError = this._onError.bind(this);
-
+		this.file = options.file;
 		if (options.file || options.dirname) {
-			this._basename = this.file = options.file ? path.basename(options.file) : 'castoe.log';
-
-			/**
-		 * @type {String}
-		 * @exports
-		 */
-			this.dirname = options.dirname || path.dirname(options.file);
-			/**
-		 * @type {Object}
-		 * @exports
-		 */
-			this.options = options.options || { flags: 'a' };
+			this._basename = this.file = options.file ? path.basename(options.file) : 'castoeFile.txt';
+			this.dirname = path.dirname(options.file);
 		}
-
-		this.maxFiles = options.maxFiles || null;
+		/**
+		 * @type {Object}
+		 */
+		this.options = options.options || { flags: 'a+', encoding: 'utf-8' };			/**
+		/**
+		 * @type {Number}
+		 */
 		this.eol = options.eol || os.EOL;
 		/**
 		 * @type {Boolean}
@@ -57,69 +56,160 @@ module.exports = class CastoeFile extends Transform {
 		 * @type {Boolean}
 		 */
 		this.overwrite = options.overwrite || false;
-
-		this._size = 0;
-		this._pendingSize = 0;
-		this._created = 0;
-		this._drain = false;
-		this._opening = false;
-		this._ending = false;
-
-		if (this.dirname) this._createLogDirIfNotExists(this.dirname);
-		this.open();
-	}
-
-	finishifEnding() {
-		if (this._ending) {
-			if (this._opening) {
-				this.once('open', () => {
-					this._stream.once('finish', () => this.emit('finish'));
-					setImmediate(() => this._stream.end());
-				});
-			} else {
-				this._stream.once('finish', () => this.emit('finish'));
-				setImmediate(() => this._stream.end());
-			}
-		}
 	}
 
 	/**
-	 * Returns a log stream for this transport.
-	 * @param {Object?} options - Stream options for this instance.
-	 * @returns {Stream}
-	 * @private
+	 * Method to send data to the file.
+	 * @param {String} input 
 	 */
-	stream(options = {}) {
-		const file = path.join(this.dirname, this.file);
-		const stream = new Stream();
-		const tail = {
-			file,
-			start: options.start
-		};
+	send(input) {
+		const outputStream = this._createStream();
+		outputStream.writeStream.write(input);
 
-		stream.destroy = tailFile(tail, (error, line) => {
-			if (error) return stream.emit('error', error);
+		outputStream.writeStream
+			.on('error', (error) => console.error(error))
+			.on('close', () => console.log('Filestream closed.'))
+			.on('open', () => {
+				const target = this._getFile();
+				if (this.automatic === true) {
+					this._automatedBackup(target);
+				}
+			});
+	}
 
-			try {
-				stream.emit('data', line);
-				line = JSON.parse(line);
-				stream.emit('send', line);
-			} catch (error) {
-				stream.emit('error', error);
-			}
+	/**
+	 * Method to read the file.
+	 * @param {Function} callback 
+	 * @returns {Promise<void>}
+	 */
+	read(callback = () => {}) {
+		const chunks = [];
+		const stream = this._createStream();
+		stream.readStream
+			.on('data', (buffer) => {
+				chunks.push(buffer);
+			})
+			.on('end', () => {
+				const buffer = Buffer.concat(chunks);
+				const decodedBuffer = buffer.toString(this.options.encoding);
+				callback(decodedBuffer);
+			});
+	}
+
+	/**
+	 * Clone method exposed to this instance.
+	 * @param {String} cloneFile - Where does the backup file needs to be cloned?
+	 * @example castoeFile.clone('cloneFile');
+	 * @returns {Promise<void>}
+	 */
+	clone(cloneFile) {
+		const file = this._getFile();
+		cloneFile = `Clone_${file}`;
+
+		fs.copyFile(file, cloneFile, (error) => {
+			if (error) return console.error('Error while cloning a file. %s', file);
 		});
+	}
+
+	/**
+	 * Delete Method exposed to this instance.
+	 * @example castoeFile.delete();
+	 * @returns {Promise<void>}
+	 */
+	delete() {
+		const target = this._getFile();
+		const fullpath = path.join(this.dirname, target);
+
+		fs.access(fullpath, (err) => {
+			if (err) return console.error(err);
+			fs.unlink(fullpath, (error) => {
+				if (error) {
+					console.error('Error while unlinking file %s', fullpath);	
+				}
+			});
+		});
+	}
+
+	/**
+	 * Returns the Writeable & Readable stream for the active file on this instance.
+	 * @returns {Transform}
+	 */
+	_createStream() {
+		const fullpath = path.join(this.dirname, this.file);
+		const stream = Transform;
+		stream.writeStream = fs.createWriteStream(fullpath, this.options);
+		if (fullpath) {
+			stream.readStream = fs.createReadStream(fullpath);
+		}
 
 		return stream;
 	}
 
 	/**
-	 * @returns {undefined}
+	 * Gets the next file to use for this instance in the case that log filesizes are being capped.
+	 * @returns {String}
 	 * @private
 	 */
-	open() {
-		if (!this.file) return;
-		if (this._opening) return;
+	_getFile() {
+		const ext = path.extname(this.file);
+		const basename = path.basename(this._basename, ext);
+		const target = `${basename}${ext}`;
+		console.log(target);
+		return target;
+	}
 
-		this._opening = true;
+	/**
+	 * Creates the dir path of the files.
+	 * @param {String} dirPath 
+	 * @private
+	 */
+	_createDirIfNotExists(dirPath) {
+		if (!fs.existsSync(dirPath)) {
+			fs.mkdirSync(dirPath, { recursive: true });
+		}
+	}
+
+	/**
+	 * Private method to include automated backups if turned on.
+	 * @private
+	 */
+	_automatedBackup(file) {
+		const fullpath = path.join(this.dirname, file);
+
+		fs.access(fullpath, (error) => {
+			if (error) return console.error(`Error while creating a new backup.\n${fullpath}`);
+
+			const newPath = path.join('Backups/');
+			this._createDirIfNotExists(newPath);
+
+			let newFileLocation = `${newPath}Backup_${file}`;
+			if (!fs.existsSync(newFileLocation)) {
+				if (this.overwrite === true) {
+					fs.copyFileSync(fullpath, newFileLocation);
+				} else {
+					fs.readdir(newPath, (error, files) => {
+						if (error) throw new Error;
+						for (let i = 0; i < files.length; i++) {
+							newFileLocation = `${newPath}${i}_Backup_${file}`;
+
+							fs.copyFileSync(file, newFileLocation);
+						}
+					});
+				}
+			} else {
+				if (this.overwrite === true) {
+					fs.copyFileSync(file, newFileLocation);
+				} else {
+					fs.readdir(newPath, (error, files) => {
+						if (error) throw new Error;
+						for (let i = 0; i < files.length; i++) {
+							newFileLocation = `${newPath}${i}_Backup_${file}`;
+
+							fs.copyFileSync(file, newFileLocation);
+						}
+					});
+				}	
+			}
+		});
 	}
 }

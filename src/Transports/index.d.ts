@@ -14,25 +14,22 @@ declare namespace castoestreamer {
   }
   
   interface CastoeFile extends Transport {
-    name: string;
-    filename: string;
-    dirname: string;
-    options: object;
-    maxsize: number | null;
-    rotationFormat: Function | null;
-    maxFiles: number;
+    file: string;
+    dirname?: string;
+    automatic: boolean;
+    overwrite: boolean;
+    options: Options.CastoeFileStreamOptions;
     eol: string;
-    tailable: boolean;
     
     new(options?: Options.CastoeFileOptions): CastoeFile;
 
-    send(input: any): CastoeFile;
+    send(input: string): CastoeFile;
     
-    clone(file: string, clonedFile: string): CastoeFile;
+    clone(clonedFile: string): CastoeFile;
     
     delete(): CastoeFile;
     
-    close(callback: Function): CastoeFile;
+    read(callback: Function): CastoeFile;
   }
   
   interface CastoeStream extends Transport {
