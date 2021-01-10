@@ -1,6 +1,6 @@
 # Castoe Streamer
 
-> Castoe Streamer is a customizable NodeJS stream handler package. It's original creation was to be able to write files for the official Castoe Discord bot. As an end result, I've also implemented methods to stream to a console output. 
+> Castoe Streamer is a package that allows customizability and easy to use data transport between streams. Mostly a console transport or a file transport. However for those who desire a different stream transport there is the CastoeStream. It's original creation was to be able to write files for the official Castoe Discord bot. As an end result, I've also implemented methods to stream to a console output or a stream.
 
 # Main features
 * Customizability is key
