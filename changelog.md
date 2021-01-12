@@ -3,7 +3,20 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
-## V1.0.0 - 10-01-2020
+## V1.0.0 - 11-01-2021
+
+<br />
+
+## Changed
+- Documentations
+  - More detailed documentation for [CastoeConsole](./Documentations/Transports/CastoeConsole.md)
+  - More detailed documentation for [CastoeFile](./Documentations/Transports/CastoeFile.md)
+  - Renamed the files
+- Markdowns
+  - Updated changelog.md
+
+
+## V1.0.0 - 10-01-2021
 
 <br />
 
@@ -11,7 +24,7 @@ All notable changes to this project will be documented in this file.
 - Markdowns
   - Readme.md more explained.
 
-## V1.0.0 - 09-01-2020
+## V1.0.0 - 09-01-2021
 
 <br />
 
@@ -25,7 +38,7 @@ All notable changes to this project will be documented in this file.
 - JSON
   - Package.JSON added keywords.
 
-## V1.0.0 - 08-01-2020
+## V1.0.0 - 08-01-2021
 
 <br />
 

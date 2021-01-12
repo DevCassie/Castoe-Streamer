@@ -2,3 +2,4 @@
 *node_modules/*
 *Backups/*
 ./src/Transports/_BackupFileTransport.js
+*BackupScripts/*
