@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 # Unreleased
+## V1.0.0 - 13-01-2021
+<br />
+
+## Changed
+- Markdowns
+  - Updated changelog.md
+- Documentations
+  - Added the documentation for [CastoeStream](./Documentations/Transports/CastoeStream.md)
+
 ## V1.0.0 - 11-01-2021
 
 <br />

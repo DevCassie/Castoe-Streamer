@@ -1,10 +1,10 @@
 const isStream = require('is-stream');
 const os = require('os');
-const { Transform } = require('stream');
+const { Transform, Stream } = require('stream');
 
 /**
  * @typedef CastoeStreamOptions
- * @property {NodeJS.ReadableStream} [stream]
+ * @property {Stream} [stream]
  */
 
 module.exports = class CastoeStream extends Transform {

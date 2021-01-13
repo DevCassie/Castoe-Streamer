@@ -1,11 +1,9 @@
 # Castoe Streamer Documentations
 
-### Install and import
-Install command using NPM: <br>
-`npm install castoe-streamer`
+## Install and import
+Install command using NPM: `npm install castoe-streamer`
 
-Install command using yarn: <br>
-`yarn isntall castoe-streamer`
+Install command using yarn: `yarn isntall castoe-streamer`
 
 Importing into the project: <br>
 ```JavaScript
@@ -13,23 +11,24 @@ const castoeStreamer = require("castoe-streamer");
 ```
 
 ## Currently implemented Classes & Functions
-* Transports
-	* [Console](./Transports/ConsoleTransport.md)
-	* [File](./Transports/FileTransport.md)
-	* [Stream](./Transports/StreamTransport.md)
+* Classes
+	* [CastoeConsole](./Transports/CastoeConsole.md)
+	* [CastoeFile](./Transports/CastoeFile.md)
+	* [CastoeStream](./Transports/CastoeStream.md)
 * Functions
 	* [Clear](./Functions/Clear.md)
 	* [Clone](./Functions/Clone.md)
 	* [Delete](./Functions/Delete.md)
 	* [Rename](./Functions/Rename.md)
 
-## Accessing the Transports or Functions
+## Accessing the Classes and Functions.
+To access the Classes simply use the keyword `new` and add the class to it. Example:
 ```JavaScript
-// For the Transports
-const castoeConsole = new castoeStreamer.CastoeConsole();
+const logger = new castoeStreamer.CastoeConsole({});
+```
+<br>
 
-// For the Functions
+To acces the Functions simply use the function name and their parameters. Example:
+```JavaScript
 castoeStreamer.Delete('./some/file.txt');
 ```
- 
-To get detailed information about the Transports or Functions. Please go to the documentation of the desired Transport or Function.

@@ -1,4 +1,4 @@
-import * as NodeJS from 'stream';
+import Stream from 'stream';
 
 export interface CastoeConsoleOptions {
 	eol?: string;
@@ -33,6 +33,6 @@ export interface CastoeFileStreamOptions {
 }
 
 export interface CastoeStreamOptions {
-	stream: NodeJS.Writable;
+	stream: Stream;
 	eol?: string;
 }
