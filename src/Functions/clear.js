@@ -1,6 +1,8 @@
+const { Stream } = require('stream');
+
 /**
  * Clears the console stream.
- * @param {NodeJS.ReadWriteStream} stream
+ * @param {Stream} stream
  * @returns {Promise<void>}
  */
 module.exports = function Clear(stream) {

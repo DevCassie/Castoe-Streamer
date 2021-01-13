@@ -1,14 +1,14 @@
-## Main import
+# Clear
+
+The Clear function is basically a function built in the package to clear the console/terminal. It requires a single parameter which is a [special stream](#parameters). So like this:
 ```JavaScript
-const castoeStreamer = require('castoe-streamer');
-// Remaining code....
+castoestreamer.Clear(stream);
 ```
 
-## Using the clear function
-```JavaScript
-// Import
-const castoeStreamer = require('castoe-streamer');
-
-// Clear function takes in a simple parameter. Simply the console stream. Which is a process.stdout;
-castoeStreamer.Clear(process.stdout);
-```
+## Parameters
+> | Parameter     | Value           |
+> |-------------- |---------------- |
+> | stream        | process.stdout  |
+> <br>
+> 
+> **Returns {Promise}**

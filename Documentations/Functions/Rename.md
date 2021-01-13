@@ -1,14 +1,15 @@
-## Main import
+# Rename
+
+The Rename function is basically a function to rename a file. It requires [two parameters](#parameters). So like this:
 ```JavaScript
-const castoeStreamer = require('castoe-streamer');
-// Remaining code....
+castoestreamer.Delete(file);
 ```
 
-## Using the rename function
-```JavaScript
-// Import
-const castoeStreamer = require('castoe-streamer');
-
-// Rename function to rename a file. The parameters you need are the oldFileName and the newFileName. Which are both strings.
-castoeStreamer.Rename('oldFileName.txt', 'newFileName.txt');
-```
+## Parameters
+> | Parameter     | Value           | Description                         |
+> |-------------- |---------------- |------------------------------------ |
+> | oldName       | String          | The current file name.              |
+> | newName       | String          | The new name for the file.          |
+> <br>
+> 
+> **Returns {Promise}**

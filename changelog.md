@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
   - Updated changelog.md
 - Documentations
   - Added the documentation for [CastoeStream](./Documentations/Transports/CastoeStream.md)
+  - Added the documentation for [Delete](./Documentations/Functions/Delete.md)
+  - Added the documentation for [Rename](./Documentations/Functions/Rename.md)
+  - Added the documentation for [Clear](./Documentations/Functions/Clear.md)
+  - Added the documentation for [Clone](./Documentations/Functions/Clone.md)
 
 ## V1.0.0 - 11-01-2021
 
