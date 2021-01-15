@@ -12,20 +12,20 @@
 
 ## Main import
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Remaining code....
 ```
 
 ## Creating a new Console Transport
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Console transport.
 const castoeConsole = new castoeStreamer.CastoeConsole();
 ```
 
 ## Customizing the Console Transport
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Console transport.
 const castoeConsole = new castoeStreamer.CastoeConsole({
 	name: 'Console Castoe',
@@ -48,7 +48,7 @@ To customize the colors, there isn't a much customizability yet there but the co
 
 ## Using the Console Transport
 ```JavaScript
-const castoeStreamer = require('castoestreamer');
+const castoeStreamer = require('castoe-streamer');
 // Console transport.
 const castoeConsole = new castoeStreamer.CastoeConsole({
 	name: 'Console Castoe',
