@@ -1,6 +1,6 @@
 {
   "name": "castoe-streamer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A stream handler package for the Official Castoe Bot.",
   "main": "./src/index.js",
   "scripts": {
