@@ -64,7 +64,7 @@ module.exports = class CastoeFile extends Transform {
 	 */
 	send(input) {
 		const outputStream = this._createStream();
-		outputStream.writeStream.write(input);
+		outputStream.writeStream.write(`${input}\n`);
 
 		outputStream.writeStream
 			.on('error', (error) => console.error(error))
@@ -154,7 +154,6 @@ module.exports = class CastoeFile extends Transform {
 		const ext = path.extname(this.file);
 		const basename = path.basename(this._basename, ext);
 		const target = `${basename}${ext}`;
-		console.log(target);
 		return target;
 	}
 

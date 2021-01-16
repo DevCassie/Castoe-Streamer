@@ -2,9 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# Released 
+## V1.0.2 - 16-01-2021
+<br>
+
+## Changed
+- Transports
+  - CastoeFile support for multiple line writing
+
 # Unreleased
 ## V1.0.0 - 13-01-2021
-<br />
+<br>
 
 ## Changed
 - Markdowns
@@ -18,7 +26,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 11-01-2021
 
-<br />
+<br>
 
 ## Changed
 - Documentations
@@ -31,7 +39,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 10-01-2021
 
-<br />
+<br>
 
 ## Changed
 - Markdowns
@@ -39,7 +47,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 09-01-2021
 
-<br />
+<br>
 
 ## Added
 - Transports
@@ -53,7 +61,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 08-01-2021
 
-<br />
+<br>
 
 ## Added
 - Type declaration files.
@@ -69,7 +77,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 03-01-2021
 
-<br />
+<br>
 
 ## Added
 - JSDOC
@@ -77,7 +85,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 9-11-2020
 
-<br />
+<br>
 
 ## Added
 - Documentation
@@ -87,7 +95,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 8-11-2020
 
-<br />
+<br>
 
 ## Added
 - Transports:
@@ -96,7 +104,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 2-11-2020
 
-<br />
+<br>
 
 ## Added
 - Functions:
@@ -115,7 +123,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 4-10-2020
 
-<br />
+<br>
 
 ## Added
 - Function support to use loose files.
@@ -127,7 +135,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 3-10-2020
 
-<br />
+<br>
 
 ## Added
 - Transports:
@@ -136,7 +144,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 2-10-2020
 
-<br />
+<br>
 
 ## Added
 - Configuration:
@@ -148,7 +156,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 1-10-2020
 
-<br />
+<br>
 
 ## Changes
 - Transports:
@@ -160,7 +168,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 30-9-2020
 
-<br />
+<br>
 
 ## Changes
 - Transports:
@@ -168,7 +176,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 29-9-2020
 
-<br />
+<br>
 
 ## Added
 - Transports:
@@ -183,7 +191,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 28-9-2020
 
-<br />
+<br>
 
 ## Added
 - Lib:
@@ -198,7 +206,7 @@ All notable changes to this project will be documented in this file.
 
 ## V1.0.0 - 27-9-2020
 
-<br />
+<br>
 
 ## Added
 - Testing file.
@@ -211,5 +219,5 @@ All notable changes to this project will be documented in this file.
 - Read me file.
 - To do file.
 
-<br />
+<br>
 
