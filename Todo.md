@@ -31,10 +31,10 @@ All To Do Items can be found in here. Those items are seperated in different cat
 
 ## Methods
 - [x] Send. Standard Castoe Logger method to send to a file or console.
-- [ ] Info. Castoe Info Logger to send information to a file or console.
-- [ ] Error. Castoe Error Logger to send information to a file or console.
-- [ ] Warn. Castoe Warn Logger to send information to a file or console.
-- [ ] Clear. Castoe Clear function to remove messages in the console or file.
+- [x] Info. Castoe Info Logger to send information to a file or console.
+- [x] Error. Castoe Error Logger to send information to a file or console. Error name.
+- [x] Warn. Castoe Warn Logger to send information to a file or console.
+- [x] Clear. Castoe Clear function to remove messages in the console or file.
 
 # Version V2 To do Items.
 
@@ -46,6 +46,8 @@ All To Do Items can be found in here. Those items are seperated in different cat
   - error() -> Error log for the Console Transport. Perhaps with a default color, text style or symbol.
 - Options
   - GZip support -> Impact on the createLogFile() method.
+	- Format support -> Change format of the layout. Including brackets etc.
+	- traceFile format -> Change the format of the traceFile option.
 
 ## CastoeFile
 - Methods

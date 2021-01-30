@@ -4,9 +4,6 @@ const moment = require('moment');
 const { Transform } = require('stream');
 const colors = require('colors/safe');
 
-// eslint-disable-next-line no-unused-vars
-const { levels } = require('../Configuration/index.js');
-
 /**
  * @typedef CastoeConsoleOptions
  * @property {String?} [name=''] Name of the console.
@@ -59,7 +56,7 @@ module.exports = class CastoeConsole extends Transform {
 		 * @type {Boolean}
 		 */
 		this.showType = options.showType || false;
-		this.stackIndex = options.stackIndex || 1;
+		this.stackIndex = options.stackIndex || 2;
 		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
 		this.consoleWarnLevels = this._stringArrayToSet(options.consoleWarnLevels);
 		this.eol = options.eol || os.EOL;
@@ -69,6 +66,19 @@ module.exports = class CastoeConsole extends Transform {
 		 * @type {CastoeConsoleColorOptions} 
 		 */
 		this.colors = options.colors;
+
+		this.levels = [ 'info', 'debug', 'warn', 'error' ];
+		for (const level of this.levels) {
+			if (this[level] === 'error') {
+				this[level] = function(info, name, callback) {
+					return this.write(info, name, callback);
+				}
+			} else {
+				this[level] = function(info, callback) {
+					return this.write(info, callback)
+				}
+			}
+		}
 
 		if (this.colors) {
 			if (options.colors.bigint && options.colors.boolean && options.colors.function && options.colors.number && options.colors.object && options.colors.string && options.colors.symbol) {
@@ -84,21 +94,6 @@ module.exports = class CastoeConsole extends Transform {
 			} else {
 				throw new Error('options.colors needs to be an Object like this:\n{bigint: String, boolean: String, function: String, number: String, object: String,symbol: String}');
 			}
-
-			/* Testing
-			const keys = Object.keys(options.colors);
-			console.log(keys);
-			const values = Object.values(options.colors);
-			console.log(values);
-			const newArray = [];
-	
-
-			for (let i = 0; i < keys.size; i++) {
-				newArray.push(keys[i], values[i]);
-			}
-
-			const newTheme = Object.assign(options.colors, newArray);
-			colors.setTheme(newTheme); */
 
 		} else {
 			options.colors = colors.setTheme({
@@ -116,45 +111,12 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Core logging method exposed to Castoe Console Logger.
 	 * @param {*} info - Input for the log.
-	 * @param {Function} callback - Callback function.
+	 * @param {Function?} callback - Callback function.
 	 * @returns {undefined}
 	 */
-	send(info, callback) {
-		setImmediate(() => this.emit('logged', info));
-
-		if (this.stderrLevels[info]) {
-			if (process.stderr) {
-				process.stdout.write(`${this._handleOptions(info)}\n${this._handleInputTypes(info)}${this.eol}`);
-			} else {
-				process.stdout.write(`${this._handleOptions(info)}\n${this._handleInputTypes(info)}${this.eol}`);
-			}
-
-			if (callback) {
-				callback();
-			}
-		} else if (this.consoleWarnLevels[info]) {
-			if (process.stderr) {
-				process.stdout.write(`${this._handleOptions(info)}\n${this._handleInputTypes(info)}${this.eol}`);
-			} else {
-				process.stdout.write(`${this._handleOptions(info)}\n${this._handleInputTypes(info)}${this.eol}`);
-			}
-
-			if (callback) {
-				callback();
-			}
-			return;
-		}
-
-		if (process.stdout) {
-			process.stdout.write(`${this._handleOptions(info)}\n${this._handleInputTypes(info)}${this.eol}`);
-		} else {
-			console.log(`${this._handleOptions(info)}\n${this._handleInputTypes(info)}${this.eol}`);
-		}
-
-		if (callback) {
-			callback();
-		}
-		return;
+	// eslint-disable-next-line no-empty-function
+	send(info) {
+		this.write(info);
 	}
 
 	/**
@@ -263,7 +225,9 @@ module.exports = class CastoeConsole extends Transform {
 		} else if (typeof input === 'number') {
 			return colors.number(input.toString());
 		} else if (typeof input === 'object') {
-			return colors.object(JSON.stringify(input));
+			const Objectarray = [];
+			Objectarray.push(input);
+			return colors.object(Objectarray);
 		} else if (typeof input === 'string') {
 			return colors.string(input);
 		} else if (typeof input === 'symbol') {
@@ -278,9 +242,32 @@ module.exports = class CastoeConsole extends Transform {
 	/**
 	 * Basic option handler.
 	 * @param {Object} info 
-	 * @private
+	 * @param {String?} name
+	 * @privates
 	 */
-	_handleOptions(info) {
+	_handleOptions(info, name) {
+		if (name) {
+			if (this.date && this.showType === true && this.traceFile === true) {
+				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
+			} else if (this.date && this.showType === true && this.traceFile === false) {
+				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] [${name}]: `;
+			} else if (this.date && this.showType === false && this.traceFile === true) {
+				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ] [${name}]: `;
+			} else if (this.date && this.showType === false && this.traceFile === false) {
+				return `[ ${this.name} | ${moment(new Date()).format(this.date)} ] [${name}]: `;
+			} else if (!this.date && this.showType === true && this.traceFile === true) {
+				return `[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
+			} else if (!this.date && this.showType === false && this.traceFile === true) {
+				return `[ ${this.name} | ${this._getFileCall()} ]\n[${name}]: `;
+			} else if (!this.date && this.showType === true && this.traceFile === false) {
+				return `[ ${this.name} | ${this._typeOfInput(info)} ] [${name}]: `;
+			} else if (!this.date && this.showType === false && this.traceFile === false) {
+				return `[ ${this.name} ] [${name}]: `;
+			} else {
+				return `[ ${this.name} ] [${name}]: `;
+			}
+		}
+
 		if (this.date && this.showType === true && this.traceFile === true) {
 			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]`;
 		} else if (this.date && this.showType === true && this.traceFile === false) {
@@ -300,5 +287,35 @@ module.exports = class CastoeConsole extends Transform {
 		} else {
 			return `[ ${this.name} ]`;
 		}
+	}
+
+	/**
+	 * 
+	 * @param {*} input 
+	 * @param {String?} name 
+	 * @param {Function} callback 
+	 * @private
+	 */
+	write(input, name, callback) {
+		setImmediate(() => this.emit('logged', input));
+
+		if (process.stdout) {
+			if (name) {
+				process.stdout.write(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
+			} else {
+				process.stdout.write(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
+			}
+		} else {
+			if (name) {
+				console.log(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
+			} else {
+				console.log(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
+			}
+		}
+
+		if (callback) {
+			callback();
+		}
+		return;
 	}
 }
