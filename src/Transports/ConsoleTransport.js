@@ -1,8 +1,13 @@
 const os = require('os');
+const fs = require('fs');
+const zlib = require('zlib');
 const path = require('path');
+const util = require('util');
 const moment = require('moment');
-const { Transform } = require('stream');
+const { Transform } = require('stream');	
 const colors = require('colors/safe');
+
+const CastoeFile = require('./FileTransport.js');
 
 /**
  * @typedef CastoeConsoleOptions
@@ -15,19 +20,17 @@ const colors = require('colors/safe');
 
 /**
  * @typedef CastoeConsoleColorOptions
- * @property {String} [bigint='green'] Which color for the bigint type?
- * @property {String} [boolean='cyan'] Which color for the boolean type?
- * @property {String} [function='magenta'] Which color for the function type?
- * @property {String} [number='blue'] Which color for the number type?
- * @property {String} [object='yellow'] Which color for the object type?
- * @property {String} [string='white'] Which color for the string type?
- * @property {String} [symbol='gray'] Which color for the symbol type?
+ * @property {String} [error='red'] Which color for the bigint type?
+ * @property {String} [debug='green'] Which color for the boolean type?
+ * @property {String} [info='blue'] Which color for the function type?
+ * @property {String} [warn='yellow'] Which color for the number type?
+ * @property {String} [send='white'] Which color for the object type?
  */
 
 /**
  * @type {Console}
  * @extends {Transform}
- * @example new Transports.Console({ traceFile: true, colors: {bigint: 'green', boolean: 'cyan', function: 'magenta', number: 'blue', object: 'yellow', string: 'white', symbol: 'gray', date: 'LTS', showType: true}});
+ * @example new Transports.Console({ traceFile: true, colors: {error: 'red', debug: 'green', info: 'blue', warn: 'yellow', send: 'white'}, date: 'LTS', showType: true });
  * @returns {undefined}
  */
 module.exports = class CastoeConsole extends Transform {
@@ -56,6 +59,14 @@ module.exports = class CastoeConsole extends Transform {
 		 * @type {Boolean}
 		 */
 		this.showType = options.showType || false;
+		/**
+		 * @type {Object}
+		 */
+		this.format = options.format;
+		/**
+		 * @type {CastoeFile}
+		 */
+		this.file = options.file;
 		this.stackIndex = options.stackIndex || 2;
 		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
 		this.consoleWarnLevels = this._stringArrayToSet(options.consoleWarnLevels);
@@ -67,56 +78,75 @@ module.exports = class CastoeConsole extends Transform {
 		 */
 		this.colors = options.colors;
 
-		this.levels = [ 'info', 'debug', 'warn', 'error' ];
-		for (const level of this.levels) {
-			if (this[level] === 'error') {
-				this[level] = function(info, name, callback) {
-					return this.write(info, name, callback);
-				}
-			} else {
-				this[level] = function(info, callback) {
-					return this.write(info, callback)
-				}
-			}
-		}
-
 		if (this.colors) {
-			if (options.colors.bigint && options.colors.boolean && options.colors.function && options.colors.number && options.colors.object && options.colors.string && options.colors.symbol) {
+			if (options.colors.error && options.colors.info && options.colors.warn && options.colors.warn && options.colors.debug && options.colors.send) {
 				colors.setTheme({
-					bigint: options.colors.bigint,
-					boolean: options.colors.boolean,
-					function: options.colors.function,
-					number: options.colors.number,
-					object: options.colors.object,
-					string: options.colors.string,
-					symbol: options.colors.symbol
+					error: options.colors.red,
+					info: options.colors.info,
+					warn: options.colors.warn,
+					debug: options.colors.green,
+					send: options.colors.send
 				});
 			} else {
-				throw new Error('options.colors needs to be an Object like this:\n{bigint: String, boolean: String, function: String, number: String, object: String,symbol: String}');
+				throw new Error('options.colors needs to be an Object like this:\n{error: String, info: String, warn: String, debug: String, send: String}');
 			}
-
 		} else {
 			options.colors = colors.setTheme({
-				bigint: 'green',
-				boolean: 'magenta',
-				function: 'cyan',
-				number: 'yellow',
-				object: 'blue',
-				string: 'white',
-				symbol: 'gray'
+				error: 'red',
+				info: 'blue',
+				warn: 'yellow',
+				debug: 'green',
+				send: 'white'
 			});
 		}
-	}
 
-	/**
-	 * Core logging method exposed to Castoe Console Logger.
-	 * @param {*} info - Input for the log.
-	 * @param {Function?} callback - Callback function.
-	 * @returns {undefined}
-	 */
-	// eslint-disable-next-line no-empty-function
-	send(info) {
-		this.write(info);
+		// this.levels = [ 'info', 'debug', 'warn', 'error' ];
+		this.levels = {
+			0: 'send',
+			1: 'info',
+			2: 'debug',
+			3: 'warn',
+			4: 'error'
+		}
+
+		Object.values(this.levels).forEach(value => {
+			if (value === 'send') {
+				this[value] = function(info, callback) {
+					return this.write(info, '', callback);
+				}
+			} else if (value === 'info') {
+				this[value] = function(info, callback) {
+					return this.write(info, '', callback);
+				}	
+			} else if (value === 'debug') {
+				this[value] = function(info, name, callback) {
+					return this.write(info, name, callback);
+				}
+			} else if (value === 'warn') {
+				this[value] = function(info, callback) {
+					return this.write(info, '', callback);
+				}
+			} else if (value === 'error') {
+				this[value] = function(info, name, callback) {
+					return this.write(info, name, callback);
+				}
+			}
+		});
+		// for (const level of this.levels) {
+		// 	if (this[level] === 'error') {
+		// 		this[level] = function(info, name, callback) {
+		// 			return this.write(info, name, callback);
+		// 		}
+		// 	} else if (this[level] === 'debug') {
+		// 		this[level] = function(info, name, callback) {
+		// 			return this.write(info, name, callback);
+		// 		}
+		// 	} else {
+		// 		this[level] = function(info, callback) {
+		// 			return this.write(info, callback)
+		// 		}
+		// 	}
+		// }
 	}
 
 	/**
@@ -127,6 +157,7 @@ module.exports = class CastoeConsole extends Transform {
 		process.stdout.cursorTo(0,0);
 		process.stdout.clearLine(0);
 		process.stdout.clearScreenDown();
+		process.stdout.resume();
 	}
 
 	/**
@@ -189,23 +220,32 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	_typeOfInput(input) {
 		if (typeof input === 'bigint') {
-			return colors.bigint('Typeof Bigint');
+			if (process.stdout) return 'Typeof Bigint';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof Bigint';
 		} else if (typeof input === 'boolean') {
-			return colors.boolean('Typeof Boolean');
+			if (process.stdout) return 'Typeof Boolean';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof Boolean';
 		} else if (typeof input === 'function') {
-			return colors.function('Typeof Function');
+			if (process.stdout) return 'Typeof Function';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof Function';
 		} else if (typeof input === 'number') {
-			return colors.number('Typeof Number');
+			if (process.stdout) return 'Typeof Number';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof Number';
 		} else if (typeof input === 'object') {
-			return colors.object('Typeof Object');
+			if (process.stdout) return 'Typeof Object';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof Object';
 		} else if (typeof input === 'string') {
-			return colors.string('Typeof String');
+			if (process.stdout) return 'Typeof String';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof String';
 		} else if (typeof input === 'symbol') {
-			return colors.symbol('Typeof Symbol');
+			if (process.stdout) return 'Typeof Symbol';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof Symbol';
 		} else if (typeof input === 'undefined') {
-			return 'Typeof Undefined';
+			if (process.stdout) return 'Typeof Undefined';
+			if (this.file && this.file instanceof CastoeFile) return 'Typeof Undefined';
 		} else {
-			return undefined;
+			if (process.stdout) return undefined;
+			if (this.file && this.file instanceof CastoeFile) return 'undefined';
 		}
 	}
 
@@ -217,25 +257,34 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	_handleInputTypes(input) {
 		if (typeof input === 'bigint') {
-			return colors.bigint(input);
+			if (process.stdout) return input;
+			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'boolean') {
-			return colors.boolean(input);
+			if (process.stdout) return input;
+			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'function') {
-			return colors.function(`function ${input.name}() { native code }`);
+			if (process.stdout) return `function ${input.name}() { native code }`;
+			if (this.file && this.file instanceof CastoeFile) return `function ${input.name}() { native code }`;
 		} else if (typeof input === 'number') {
-			return colors.number(input.toString());
+			if (process.stdout) return input;
+			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'object') {
 			const Objectarray = [];
 			Objectarray.push(input);
-			return colors.object(Objectarray);
+			if (process.stdout) JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
+			if (this.file && this.file instanceof CastoeFile) return JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
 		} else if (typeof input === 'string') {
-			return colors.string(input);
+			if (process.stdout) return input;
+			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'symbol') {
-			return colors.symbol(input.toString());
+			if (process.stdout) return input;
+			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'undefined') {
-			return undefined;
+			if (process.stdout) return input;
+			if (this.file && this.file instanceof CastoeFile) return 'undefined';
 		} else {
-			return undefined;
+			if (process.stdout) return undefined;
+			if (this.file && this.file instanceof CastoeFile) return 'undefined';
 		}
 	}
 
@@ -258,7 +307,7 @@ module.exports = class CastoeConsole extends Transform {
 			} else if (!this.date && this.showType === true && this.traceFile === true) {
 				return `[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
 			} else if (!this.date && this.showType === false && this.traceFile === true) {
-				return `[ ${this.name} | ${this._getFileCall()} ]\n[${name}]: `;
+				return `[ ${this.name} | ${this._getFileCall()} ] [${name}]: `;
 			} else if (!this.date && this.showType === true && this.traceFile === false) {
 				return `[ ${this.name} | ${this._typeOfInput(info)} ] [${name}]: `;
 			} else if (!this.date && this.showType === false && this.traceFile === false) {
@@ -298,18 +347,29 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	write(input, name, callback) {
 		setImmediate(() => this.emit('logged', input));
-
 		if (process.stdout) {
 			if (name) {
 				process.stdout.write(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
+				if (this.file && this.file instanceof CastoeFile) {
+					this.file.send(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
+				}
 			} else {
 				process.stdout.write(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
+				if (this.file && this.file instanceof CastoeFile) {
+					this.file.send(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
+				}
 			}
 		} else {
 			if (name) {
 				console.log(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
+				if (this.file && this.file instanceof CastoeFile) {
+					this.file.send(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
+				}
 			} else {
 				console.log(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
+				if (this.file && this.file instanceof CastoeFile) {
+					this.file.send(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
+				}
 			}
 		}
 

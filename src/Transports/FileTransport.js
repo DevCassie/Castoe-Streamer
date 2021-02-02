@@ -43,7 +43,7 @@ module.exports = class CastoeFile extends Transform {
 		/**
 		 * @type {Object}
 		 */
-		this.options = options.options || { flags: 'a+', encoding: 'utf-8' };			/**
+		this.options = options.options || { flags: 'a+' };			/**
 		/**
 		 * @type {Number}
 		 */
@@ -154,7 +154,6 @@ module.exports = class CastoeFile extends Transform {
 		const ext = path.extname(this.file);
 		const basename = path.basename(this._basename, ext);
 		const target = `${basename}${ext}`;
-		console.log(target);
 		return target;
 	}
 
