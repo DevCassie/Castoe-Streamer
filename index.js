@@ -1,11 +1,9 @@
 const castoeStreamer = require('./src/index.js');
 
 const castoeConsole = new castoeStreamer.CastoeConsole({
-	name: 'Logger',
 	showType: true,
 	date: 'LT',
 	traceFile: true,
-	stackIndex: 2,
 	format: {
 		name: '{transportname}',
 		divider: ' - ',
@@ -30,3 +28,5 @@ castoeConsole.info({
 	}
 });
 castoeConsole.warn('This is a warning');
+
+castoeConsole.createGZip(false);

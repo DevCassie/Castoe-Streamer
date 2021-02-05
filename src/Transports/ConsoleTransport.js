@@ -3,9 +3,9 @@ const fs = require('fs');
 const zlib = require('zlib');
 const path = require('path');
 const util = require('util');
+const colog = require('colog');
 const moment = require('moment');
-const { Transform } = require('stream');	
-const colors = require('colors/safe');
+const { Transform } = require('stream');
 
 const CastoeFile = require('./FileTransport.js');
 
@@ -67,40 +67,30 @@ module.exports = class CastoeConsole extends Transform {
 		 * @type {CastoeFile}
 		 */
 		this.file = options.file;
-		this.stackIndex = options.stackIndex || 2;
+		this.stackIndex = options.stackIndex || 1;
 		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
 		this.consoleWarnLevels = this._stringArrayToSet(options.consoleWarnLevels);
 		this.eol = options.eol || os.EOL;
 
 		this.setMaxListeners(30);
-		/**
-		 * @type {CastoeConsoleColorOptions} 
-		 */
-		this.colors = options.colors;
+		// /**
+		//  * @type {CastoeConsoleColorOptions} 
+		//  */
+		// this.colors = options.colors;
 
-		if (this.colors) {
-			if (options.colors.error && options.colors.info && options.colors.warn && options.colors.warn && options.colors.debug && options.colors.send) {
-				colors.setTheme({
-					error: options.colors.red,
-					info: options.colors.info,
-					warn: options.colors.warn,
-					debug: options.colors.green,
-					send: options.colors.send
-				});
-			} else {
-				throw new Error('options.colors needs to be an Object like this:\n{error: String, info: String, warn: String, debug: String, send: String}');
-			}
-		} else {
-			options.colors = colors.setTheme({
-				error: 'red',
-				info: 'blue',
-				warn: 'yellow',
-				debug: 'green',
-				send: 'white'
-			});
-		}
-
-		// this.levels = [ 'info', 'debug', 'warn', 'error' ];
+		// if (this.colors) {
+		// 	if (options.colors.error && options.colors.info && options.colors.warn && options.colors.warn && options.colors.debug && options.colors.send) {
+		// 		this.colors = {
+		// 			error: options.colors.error,
+		// 			warn: options.colors.warn,
+		// 			debug: options.colors.debug,
+		// 			info: options.colors.info,
+		// 			send: options.colors.send
+		// 		}
+		// 	} else {
+		// 		throw new Error('options.colors needs to be an Object like this:\n{error: String, info: String, warn: String, debug: String, send: String}');
+		// 	}
+		// }
 		this.levels = {
 			0: 'send',
 			1: 'info',
@@ -112,41 +102,31 @@ module.exports = class CastoeConsole extends Transform {
 		Object.values(this.levels).forEach(value => {
 			if (value === 'send') {
 				this[value] = function(info, callback) {
-					return this.write(info, '', callback);
+					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
+					return this.write(colog.white(newInfo), '', callback);
 				}
 			} else if (value === 'info') {
 				this[value] = function(info, callback) {
-					return this.write(info, '', callback);
+					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
+					return this.write(colog.cyan(newInfo), '', callback);
 				}	
 			} else if (value === 'debug') {
 				this[value] = function(info, name, callback) {
-					return this.write(info, name, callback);
+					const newInfo = `${this._handleOptions(info, name)} ${this._handleInputTypes(info)}${this.eol}`;
+					return this.write(colog.green(newInfo), callback);
 				}
 			} else if (value === 'warn') {
 				this[value] = function(info, callback) {
-					return this.write(info, '', callback);
+					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
+					return this.write(colog.yellow(newInfo), callback);
 				}
 			} else if (value === 'error') {
 				this[value] = function(info, name, callback) {
-					return this.write(info, name, callback);
+					const newInfo = `${this._handleOptions(info, name)} ${this._handleInputTypes(info)}${this.eol}`;
+					return this.write(colog.red(newInfo), callback);
 				}
 			}
 		});
-		// for (const level of this.levels) {
-		// 	if (this[level] === 'error') {
-		// 		this[level] = function(info, name, callback) {
-		// 			return this.write(info, name, callback);
-		// 		}
-		// 	} else if (this[level] === 'debug') {
-		// 		this[level] = function(info, name, callback) {
-		// 			return this.write(info, name, callback);
-		// 		}
-		// 	} else {
-		// 		this[level] = function(info, callback) {
-		// 			return this.write(info, callback)
-		// 		}
-		// 	}
-		// }
 	}
 
 	/**
@@ -156,8 +136,7 @@ module.exports = class CastoeConsole extends Transform {
 	clear() {
 		process.stdout.cursorTo(0,0);
 		process.stdout.clearLine(0);
-		process.stdout.clearScreenDown();
-		process.stdout.resume();
+		process.stdout.clearScreenDown();	
 	}
 
 	/**
@@ -178,14 +157,6 @@ module.exports = class CastoeConsole extends Transform {
 			throw new Error(errMsg);
 		}
 
-		return strArray.reduce((set, el) => {
-			if (typeof el !== 'string') {
-				throw new Error(errMsg);
-			}
-			set[el] = true;
-
-			return set;
-		}, {});
 	}
 
 	/**
@@ -271,7 +242,7 @@ module.exports = class CastoeConsole extends Transform {
 		} else if (typeof input === 'object') {
 			const Objectarray = [];
 			Objectarray.push(input);
-			if (process.stdout) JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
+			if (process.stdout.isTTY) return JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
 			if (this.file && this.file instanceof CastoeFile) return JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
 		} else if (typeof input === 'string') {
 			if (process.stdout) return input;
@@ -283,8 +254,8 @@ module.exports = class CastoeConsole extends Transform {
 			if (process.stdout) return input;
 			if (this.file && this.file instanceof CastoeFile) return 'undefined';
 		} else {
-			if (process.stdout) return undefined;
-			if (this.file && this.file instanceof CastoeFile) return 'undefined';
+			if (process.stdout) return input;
+			if (this.file && this.file instanceof CastoeFile) return 'yes';
 		}
 	}
 
@@ -345,31 +316,18 @@ module.exports = class CastoeConsole extends Transform {
 	 * @param {Function} callback 
 	 * @private
 	 */
-	write(input, name, callback) {
+	write(input, callback) {
 		setImmediate(() => this.emit('logged', input));
-		if (process.stdout) {
-			if (name) {
-				process.stdout.write(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
-				if (this.file && this.file instanceof CastoeFile) {
-					this.file.send(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
-				}
-			} else {
-				process.stdout.write(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
-				if (this.file && this.file instanceof CastoeFile) {
-					this.file.send(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
-				}
+
+		if (process.stdout.isTTY) {
+			process.stdout.write(input);
+			if (this.file && this.file instanceof CastoeFile) {
+				this.file.send(input);
 			}
 		} else {
-			if (name) {
-				console.log(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
-				if (this.file && this.file instanceof CastoeFile) {
-					this.file.send(`${this._handleOptions(input, name)}${this._handleInputTypes(input)}${this.eol}`);
-				}
-			} else {
-				console.log(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
-				if (this.file && this.file instanceof CastoeFile) {
-					this.file.send(`${this._handleOptions(input)} ${this._handleInputTypes(input)}${this.eol}`);
-				}
+			console.log(input);
+			if (this.file && this.file instanceof CastoeFile) {
+				this.file.send(input);
 			}
 		}
 
@@ -377,5 +335,22 @@ module.exports = class CastoeConsole extends Transform {
 			callback();
 		}
 		return;
+	}
+
+	/**
+	 * 
+	 * @param {Boolean} keepFile - Whether or not you want to keep the original file.
+	 */
+	createGZip(keepFile) {
+		const file = this.file;
+		keepFile = true;
+		const newFile = fs.createWriteStream(`${this.file.file}.gzip`);
+		const gzip = zlib.createGzip();
+
+		if (file && file instanceof CastoeFile) {
+			if (keepFile === false) {
+				this.file.pipe(newFile);
+			}	
+		}
 	}
 }
