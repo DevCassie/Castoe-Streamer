@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 const { Stream } = require('stream');
 
 /**

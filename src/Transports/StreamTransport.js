@@ -1,5 +1,6 @@
 const isStream = require('is-stream');
 const os = require('os');
+// eslint-disable-next-line no-unused-vars
 const { Transform, Stream } = require('stream');
 
 /**

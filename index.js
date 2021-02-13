@@ -1,19 +1,16 @@
 const castoeStreamer = require('./src/index.js');
 
 const castoeConsole = new castoeStreamer.CastoeConsole({
-	showType: true,
-	date: 'LT',
-	traceFile: true,
-	format: {
-		name: '{transportname}',
-		divider: ' - ',
-		file: '{filename}',
-		date: '{date}',
-		output: '{input}'	
-	},
+	showType: false,
+	traceFile: false,
 	file: new castoeStreamer.CastoeFile({
 		file: 'console.log'
 	})
+});
+
+const file = new castoeStreamer.CastoeFile({
+	file: 'Test.txt',
+	automatic: false
 });
 castoeConsole.send(false);
 castoeConsole.debug('User with identifier 39247194032061884 authenticated using OAuth2.', 'AUTHENTICATION');
@@ -29,4 +26,8 @@ castoeConsole.info({
 });
 castoeConsole.warn('This is a warning');
 
-castoeConsole.createGZip(false);
+castoeConsole.createGzip();
+
+file.send('test test');
+
+file.createGzip();

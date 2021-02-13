@@ -2,7 +2,6 @@ const os = require('os');
 const fs = require('fs');
 const zlib = require('zlib');
 const path = require('path');
-const util = require('util');
 const colog = require('colog');
 const moment = require('moment');
 const { Transform } = require('stream');
@@ -15,8 +14,9 @@ const CastoeFile = require('./FileTransport.js');
  * @property {String?} [date=''] Format for the date.
  * @property {Boolean?} [traceFile=false] Wether or not the console should return the file it's called from.
  * @property {Boolean?} [showType=false] Should the output show which type the input is?
- * @property {CastoeConsoleColorOptions?} [colors={}] Which colours should be what?
+
  */
+//  * @property {CastoeConsoleColorOptions?} [colors={}] Which colours should be what?
 
 /**
  * @typedef CastoeConsoleColorOptions
@@ -46,7 +46,7 @@ module.exports = class CastoeConsole extends Transform {
 		/**
 		 * @type {String}
 		 */
-		this.name = options.name || 'Castoe Console';
+		this.name = options.name;
 		/**
 		 * @type {String}
 		 */
@@ -68,8 +68,6 @@ module.exports = class CastoeConsole extends Transform {
 		 */
 		this.file = options.file;
 		this.stackIndex = options.stackIndex || 1;
-		this.stderrLevels = this._stringArrayToSet(options.stderrLevels);
-		this.consoleWarnLevels = this._stringArrayToSet(options.consoleWarnLevels);
 		this.eol = options.eol || os.EOL;
 
 		this.setMaxListeners(30);
@@ -103,27 +101,57 @@ module.exports = class CastoeConsole extends Transform {
 			if (value === 'send') {
 				this[value] = function(info, callback) {
 					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
-					return this.write(colog.white(newInfo), '', callback);
+					if (this.file && this.file instanceof CastoeFile) {
+						this.file.send(newInfo);
+						if (process.stdout.isTTY) return process.stdout.write(colog.white(newInfo), callback);
+					}
+					if (!this.file || !(this.file instanceof CastoeFile)) {
+						if (process.stdout.isTTY) return process.stdout.write(colog.white(newInfo), callback);
+					}
 				}
 			} else if (value === 'info') {
 				this[value] = function(info, callback) {
 					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
-					return this.write(colog.cyan(newInfo), '', callback);
+					if (this.file && this.file instanceof CastoeFile) {
+						this.file.send(newInfo);
+						if (process.stdout.isTTY) return process.stdout.write(colog.cyan(newInfo), callback);
+					}
+					if (!this.file || !(this.file instanceof CastoeFile)) {
+						if (process.stdout.isTTY) return process.stdout.write(colog.cyan(newInfo), callback);
+					}
 				}	
 			} else if (value === 'debug') {
 				this[value] = function(info, name, callback) {
 					const newInfo = `${this._handleOptions(info, name)} ${this._handleInputTypes(info)}${this.eol}`;
-					return this.write(colog.green(newInfo), callback);
+					if (this.file && this.file instanceof CastoeFile) {
+						this.file.send(newInfo);
+						if (process.stdout.isTTY) return process.stdout.write(colog.green(newInfo), callback);
+					}
+					if (!this.file || !(this.file instanceof CastoeFile)) {
+						if (process.stdout.isTTY) return process.stdout.write(colog.green(newInfo), callback);
+					}
 				}
 			} else if (value === 'warn') {
 				this[value] = function(info, callback) {
 					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
-					return this.write(colog.yellow(newInfo), callback);
+					if (this.file && this.file instanceof CastoeFile) {
+						this.file.send(newInfo);
+						if (process.stdout.isTTY) return process.stdout.write(colog.yellow(newInfo), callback);
+					}
+					if (!this.file || !(this.file instanceof CastoeFile)) {
+						if (process.stdout.isTTY) return process.stdout.write(colog.yellow(newInfo), callback);
+					}
 				}
 			} else if (value === 'error') {
 				this[value] = function(info, name, callback) {
 					const newInfo = `${this._handleOptions(info, name)} ${this._handleInputTypes(info)}${this.eol}`;
-					return this.write(colog.red(newInfo), callback);
+					if (this.file && this.file instanceof CastoeFile) {
+						this.file.send(newInfo);
+						if (process.stdout.isTTY) return process.stdout.write(colog.red(newInfo), callback);
+					}
+					if (!this.file || !(this.file instanceof CastoeFile)) {
+						if (process.stdout.isTTY) return process.stdout.write(colog.red(newInfo), callback);
+					}
 				}
 			}
 		});
@@ -137,26 +165,6 @@ module.exports = class CastoeConsole extends Transform {
 		process.stdout.cursorTo(0,0);
 		process.stdout.clearLine(0);
 		process.stdout.clearScreenDown();	
-	}
-
-	/**
-   * Returns a Set-like object with strArray's elements as keys (each with the
-   * value true).
-   * @param {Array} strArray - Array of Set-elements as strings.
-   * @param {?string} [errMsg] - Custom error message thrown on invalid input.
-   * @returns {Object} - Returns an Object.
-   * @private
-   */
-	_stringArrayToSet(strArray, errMsg) {
-		if (!strArray)
-			return {};
-
-		errMsg = errMsg || 'Can\'t make set from type other than Array of string elements';
-
-		if (!Array.isArray(strArray)) {
-			throw new Error(errMsg);
-		}
-
 	}
 
 	/**
@@ -191,31 +199,31 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	_typeOfInput(input) {
 		if (typeof input === 'bigint') {
-			if (process.stdout) return 'Typeof Bigint';
+			if (process.stdout.isTTY) return 'Typeof Bigint';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Bigint';
 		} else if (typeof input === 'boolean') {
-			if (process.stdout) return 'Typeof Boolean';
+			if (process.stdout.isTTY) return 'Typeof Boolean';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Boolean';
 		} else if (typeof input === 'function') {
-			if (process.stdout) return 'Typeof Function';
+			if (process.stdout.isTTY) return 'Typeof Function';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Function';
 		} else if (typeof input === 'number') {
-			if (process.stdout) return 'Typeof Number';
+			if (process.stdout.isTTY) return 'Typeof Number';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Number';
 		} else if (typeof input === 'object') {
-			if (process.stdout) return 'Typeof Object';
+			if (process.stdout.isTTY) return 'Typeof Object';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Object';
 		} else if (typeof input === 'string') {
-			if (process.stdout) return 'Typeof String';
+			if (process.stdout.isTTY) return 'Typeof String';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof String';
 		} else if (typeof input === 'symbol') {
-			if (process.stdout) return 'Typeof Symbol';
+			if (process.stdout.isTTY) return 'Typeof Symbol';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Symbol';
 		} else if (typeof input === 'undefined') {
-			if (process.stdout) return 'Typeof Undefined';
+			if (process.stdout.isTTY) return 'Typeof Undefined';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Undefined';
 		} else {
-			if (process.stdout) return undefined;
+			if (process.stdout.isTTY) return undefined;
 			if (this.file && this.file instanceof CastoeFile) return 'undefined';
 		}
 	}
@@ -228,16 +236,16 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	_handleInputTypes(input) {
 		if (typeof input === 'bigint') {
-			if (process.stdout) return input;
+			if (process.stdout.isTTY) return input;
 			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'boolean') {
-			if (process.stdout) return input;
+			if (process.stdout.isTTY) return input;
 			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'function') {
-			if (process.stdout) return `function ${input.name}() { native code }`;
+			if (process.stdout.isTTY) return `function ${input.name}() { native code }`;
 			if (this.file && this.file instanceof CastoeFile) return `function ${input.name}() { native code }`;
 		} else if (typeof input === 'number') {
-			if (process.stdout) return input;
+			if (process.stdout.isTTY) return input;
 			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'object') {
 			const Objectarray = [];
@@ -245,17 +253,17 @@ module.exports = class CastoeConsole extends Transform {
 			if (process.stdout.isTTY) return JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
 			if (this.file && this.file instanceof CastoeFile) return JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
 		} else if (typeof input === 'string') {
-			if (process.stdout) return input;
+			if (process.stdout.isTTY) return input;
 			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'symbol') {
-			if (process.stdout) return input;
+			if (process.stdout.isTTY) return input;
 			if (this.file && this.file instanceof CastoeFile) return input;
 		} else if (typeof input === 'undefined') {
-			if (process.stdout) return input;
+			if (process.stdout.isTTY) return input;
 			if (this.file && this.file instanceof CastoeFile) return 'undefined';
 		} else {
-			if (process.stdout) return input;
-			if (this.file && this.file instanceof CastoeFile) return 'yes';
+			if (process.stdout.isTTY) return input;
+			if (this.file && this.file instanceof CastoeFile) return 'undefined';
 		}
 	}
 
@@ -267,90 +275,84 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	_handleOptions(info, name) {
 		if (name) {
-			if (this.date && this.showType === true && this.traceFile === true) {
+			if (this.name && this.date && this.showType === true && this.traceFile === true) {
 				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (this.date && this.showType === true && this.traceFile === false) {
+			} else if (this.name && this.date && this.showType === true && this.traceFile === false) {
 				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (this.date && this.showType === false && this.traceFile === true) {
+			} else if (this.name && this.date && this.showType === false && this.traceFile === true) {
 				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ] [${name}]: `;
-			} else if (this.date && this.showType === false && this.traceFile === false) {
+			} else if (this.name && this.date && this.showType === false && this.traceFile === false) {
 				return `[ ${this.name} | ${moment(new Date()).format(this.date)} ] [${name}]: `;
-			} else if (!this.date && this.showType === true && this.traceFile === true) {
+			} else if (this.name && !this.date && this.showType === true && this.traceFile === true) {
 				return `[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (!this.date && this.showType === false && this.traceFile === true) {
+			} else if (this.name && !this.date && this.showType === false && this.traceFile === true) {
 				return `[ ${this.name} | ${this._getFileCall()} ] [${name}]: `;
-			} else if (!this.date && this.showType === true && this.traceFile === false) {
+			} else if (this.name && !this.date && this.showType === true && this.traceFile === false) {
 				return `[ ${this.name} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (!this.date && this.showType === false && this.traceFile === false) {
+			} else if (this.name && !this.date && this.showType === false && this.traceFile === false) {
 				return `[ ${this.name} ] [${name}]: `;
+			} else if (this.name) {
+				return `[ ${this.name} ] [${name}]: `;
+			} else if (!this.name && this.date && this.showType === true && this.traceFile === false) {
+				return `[${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] [${name}]: `;
+			} else if (!this.name && this.date && this.showType === false && this.traceFile === true) {
+				return `[ ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ] [${name}]: `;
+			} else if (!this.name && this.date && this.showType === false && this.traceFile === false) {
+				return `[ ${moment(new Date()).format(this.date)} ] [${name}]: `;
+			} else if (!this.name && !this.date && this.showType === true && this.traceFile === true) {
+				return `[ ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
+			} else if (!this.name && !this.date && this.showType === false && this.traceFile === true) {
+				return `[ ${this._getFileCall()} ] [${name}]: `;
+			} else if (!this.name && !this.date && this.showType === true && this.traceFile === false) {
+				return `[ ${this._typeOfInput(info)} ] [${name}]: `;
+			} else if (!this.name && !this.date && this.showType === false && this.traceFile === false) {
+				return `[${name}]: `;
 			} else {
-				return `[ ${this.name} ] [${name}]: `;
+				return `[${name}]: `
 			}
 		}
 
-		if (this.date && this.showType === true && this.traceFile === true) {
+		if (this.name && this.date && this.showType === true && this.traceFile === true) {
 			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]`;
-		} else if (this.date && this.showType === true && this.traceFile === false) {
+		} else if (this.name && this.date && this.showType === true && this.traceFile === false) {
 			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]`;
-		} else if (this.date && this.showType === false && this.traceFile === true) {
+		} else if (this.name && this.date && this.showType === false && this.traceFile === true) {
 			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]`;
-		} else if (this.date && this.showType === false && this.traceFile === false) {
+		} else if (this.name && this.date && this.showType === false && this.traceFile === false) {
 			return `[ ${this.name} | ${moment(new Date()).format(this.date)} ]`;
-		} else if (!this.date && this.showType === true && this.traceFile === true) {
+		} else if (this.name && !this.date && this.showType === true && this.traceFile === true) {
 			return `[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]`;
-		} else if (!this.date && this.showType === false && this.traceFile === true) {
+		} else if (this.name && !this.date && this.showType === false && this.traceFile === true) {
 			return `[ ${this.name} | ${this._getFileCall()} ]`;
-		} else if (!this.date && this.showType === true && this.traceFile === false) {
+		} else if (this.name && !this.date && this.showType === true && this.traceFile === false) {
 			return `[ ${this.name} | ${this._typeOfInput(info)} ]`;
-		} else if (!this.date && this.showType === false && this.traceFile === false) {
+		} else if (this.name && !this.date && this.showType === false && this.traceFile === false) {
 			return `[ ${this.name} ]`;
-		} else {
-			return `[ ${this.name} ]`;
+		} else if (!this.name && this.date && this.showType === true && this.traceFile === false) {
+			return `[ ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]`;
+		} else if (!this.name && this.date && this.showType === false && this.traceFile === true) {
+			return `[ ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]`;
+		} else if (!this.name && this.date && this.showType === false && this.traceFile === false) {
+			return `[ ${moment(new Date()).format(this.date)} ]`;
+		} else if (!this.name && !this.date && this.showType === true && this.traceFile === true) {
+			return `[ ${this._getFileCall()} | ${this._typeOfInput(info)} ]`;
+		} else if (!this.name && !this.date && this.showType === false && this.traceFile === true) {
+			return `[ ${this._getFileCall()} ]`;
+		} else if (!this.name && !this.date && this.showType === true && this.traceFile === false) {
+			return `[ ${this._typeOfInput(info)} ]`;
+		} else if (!this.name && !this.date && this.showType === false && this.traceFile === false) {
+			return '';
 		}
 	}
 
-	/**
-	 * 
-	 * @param {*} input 
-	 * @param {String?} name 
-	 * @param {Function} callback 
-	 * @private
-	 */
-	write(input, callback) {
-		setImmediate(() => this.emit('logged', input));
-
-		if (process.stdout.isTTY) {
-			process.stdout.write(input);
-			if (this.file && this.file instanceof CastoeFile) {
-				this.file.send(input);
-			}
-		} else {
-			console.log(input);
-			if (this.file && this.file instanceof CastoeFile) {
-				this.file.send(input);
-			}
-		}
-
-		if (callback) {
-			callback();
-		}
-		return;
-	}
-
-	/**
-	 * 
-	 * @param {Boolean} keepFile - Whether or not you want to keep the original file.
-	 */
-	createGZip(keepFile) {
-		const file = this.file;
-		keepFile = true;
-		const newFile = fs.createWriteStream(`${this.file.file}.gzip`);
+	createGzip() {
 		const gzip = zlib.createGzip();
-
-		if (file && file instanceof CastoeFile) {
-			if (keepFile === false) {
-				this.file.pipe(newFile);
-			}	
+		if (!this.file) throw new Error('File doesn\'t exists.');
+		const readFile = fs.createReadStream(this.file.file);
+		const writeFile = fs.createWriteStream(`${this.file.file}.gz`);
+		if (!readFile) {
+			throw new Error('File does not exists.');		
 		}
+		return readFile.pipe(gzip).pipe(writeFile);
 	}
 }
