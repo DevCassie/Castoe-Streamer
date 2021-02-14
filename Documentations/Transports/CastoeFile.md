@@ -94,6 +94,23 @@ Castoe file currently contains 4 methods that can be used.
 
 <br>
 
+## .createGzip()
+> Creates a Gzipped file.
+> <br>
+>
+> **Example:**
+> ```JavaScript
+> const castoestreamer = require('castoe-streamer');
+> const castoeFile = new castoestreamer.CastoeFile({
+> file: 'castoeFile.txt'
+> });
+> castoeFile.createGzip();
+> ```
+>
+> **Returns {Promise}**
+
+<br>
+
 # Typedefs
 
 ## CastoeFileOptions
@@ -121,4 +138,4 @@ Castoe file currently contains 4 methods that can be used.
 > | Key           | Value         | Description                                                               |
 > |-------------- |-------------- |-------------------------------------------------------------------------- |
 > | flags         | String        | [File system flags](https://nodejs.org/api/fs.html#fs_file_system_flags). |
-> | encoding      | String        | Text encoding. Default is: 'utf8'.                                        |
+> | encoding      | String        | Text encoding. Default is: 'utf-8'.                                       |

@@ -44,7 +44,7 @@ module.exports = class CastoeFile extends Transform {
 		/**
 		 * @type {Object}
 		 */
-		this.options = options.options || { flags: 'a+' };			/**
+		this.options = options.options || { flags: 'a+', encoding: 'utf-8' };			/**
 		/**
 		 * @type {Number}
 		 */
