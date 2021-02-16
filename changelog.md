@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 
 # Released 
+## V1.0.0 - 15-01-2021
+<br>
+
+## Changed
+- Release
+  - Official Release! 
+- New Branch Created for Development
+  - Started planning on new features for Version 2.
+
 ## V1.0.2 - 16-01-2021
 <br>
 
