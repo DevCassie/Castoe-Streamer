@@ -1,8 +1,8 @@
 const castoeStreamer = require('./src/index.js');
 
 const castoeConsole = new castoeStreamer.CastoeConsole({
-	showType: false,
-	traceFile: false,
+	showType: true,
+	traceFile: true,
 	// file: new castoeStreamer.CastoeFile({
 	// 	file: 'console.log'
 	// })

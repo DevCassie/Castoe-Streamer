@@ -198,6 +198,11 @@ module.exports = class CastoeConsole extends Transform {
 	 * @private
 	 */
 	_typeOfInput(input) {
+		if (input instanceof Error) {
+			if (process.stdout.isTTY) return 'Instanceof Error';
+			if (this.file && this.file instanceof CastoeFile) return 'Instanceof Error';
+		} 
+
 		if (typeof input === 'bigint') {
 			if (process.stdout.isTTY) return 'Typeof Bigint';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Bigint';
@@ -222,9 +227,6 @@ module.exports = class CastoeConsole extends Transform {
 		} else if (typeof input === 'undefined') {
 			if (process.stdout.isTTY) return 'Typeof Undefined';
 			if (this.file && this.file instanceof CastoeFile) return 'Typeof Undefined';
-		} else if (input instanceof Error) {
-			if (process.stdout.isTTY) return 'Typeof Error';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Error';
 		} else {
 			if (process.stdout.isTTY) return undefined;
 			if (this.file && this.file instanceof CastoeFile) return 'undefined';
