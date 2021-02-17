@@ -31,6 +31,7 @@
   ],
   "dependencies": {
     "async-series": "0.0.1",
+    "colog": "^1.0.4",
     "is-stream": "^2.0.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.0"
