@@ -1,7 +1,7 @@
 {
   "name": "castoe-streamer",
   "version": "2.0.0",
-  "description": "Castoe Streamer is a package that allows customizability and easy to use data transport between streams.",
+  "description": "Castoe Streamer is a package that allows customizability and easy to use data transport between streams. ",
   "main": "./src/index.js",
   "scripts": {
     "test": "echo Test script is working!",

@@ -65,7 +65,7 @@ module.exports = class CastoeFile extends Transform {
 	 */
 	send(input) {
 		const outputStream = this._createStream();
-		outputStream.writeStream.write(input);
+		outputStream.writeStream.write(`${input}\n`);
 
 		outputStream.writeStream
 			.on('error', (error) => console.error(error))
