@@ -2,22 +2,21 @@ import Stream from 'stream';
 
 export interface CastoeConsoleOptions {
 	eol?: string;
-	name: string;
+	name?: string;
 	date?: string;
 	traceFile?: boolean;
 	showType?: boolean;
-	colors?: CastoeConsoleColorOptions;
 }
 	
-export interface CastoeConsoleColorOptions {
-	bigint: string;
-	boolean: string;
-	function: string;
-	number: string;
-	object: string;
-	string: string;
-	symbol: string;
-}
+// export interface CastoeConsoleColorOptions {
+// 	bigint: string;
+// 	boolean: string;
+// 	function: string;
+// 	number: string;
+// 	object: string;
+// 	string: string;
+// 	symbol: string;
+// }
 
 export interface CastoeFileOptions {
   file: string;

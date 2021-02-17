@@ -3,6 +3,7 @@ const os = require('os');
 // eslint-disable-next-line no-unused-vars
 const { Transform, Stream } = require('stream'); 
 const fs = require('fs');
+const zlib = require('zlib');
 const path = require('path');
 
 /**
@@ -210,5 +211,15 @@ module.exports = class CastoeFile extends Transform {
 				}	
 			}
 		});
+	}
+
+	createGzip() {
+		const gzip = zlib.createGzip();
+		const readFile = fs.createReadStream(this.file);
+		const writeFile = fs.createWriteStream(`${this.file}.gz`);
+		if (!readFile) {
+			throw new Error('File does not exists.');		
+		}
+		return readFile.pipe(gzip).pipe(writeFile);
 	}
 }

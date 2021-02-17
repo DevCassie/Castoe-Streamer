@@ -1,6 +1,15 @@
 const castoeStreamer = require('./src/index.js');
-const fs = require('fs');
 
-const castoeConsole = new castoeStreamer.CastoeConsole({});
+const castoeConsole = new castoeStreamer.CastoeConsole({
+	showType: true,
+	traceFile: true,
+	// file: new castoeStreamer.CastoeFile({
+	// 	file: 'console.log'
+	// })
+});
 
-castoeConsole.send('Hiii')
+const error = new Error('Some error message');
+const regex = new RegExp('w');
+castoeConsole.error(error, 'Range Error');
+castoeConsole.debug(regex, 'REGEX');
+castoeConsole.info(new Object({ id: 1, user: { name: 'Cassie', interest: 'design' }}));
