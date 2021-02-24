@@ -1,6 +1,7 @@
 const os = require('os');
 const fs = require('fs');
 const zlib = require('zlib');
+const util = require('util');
 const path = require('path');
 const colog = require('colog');
 const moment = require('moment');
@@ -186,9 +187,8 @@ module.exports = class CastoeConsole extends Transform {
 			data.position = sp[4];
 			data.file = path.basename(data.path);
 			data.stack = stackList.join('\n');
+			return `${data.file}:${data.line}`;
 		}
-
-		return `${JSON.stringify(data.file).replace('"', '').replace('"', '')}:${JSON.stringify(data.line).replace('"', '').replace('"', '')}`;
 	}
 
 	/**
@@ -263,8 +263,8 @@ module.exports = class CastoeConsole extends Transform {
 		} else if (typeof input === 'object') {
 			const Objectarray = [];
 			Objectarray.push(input);
-			if (process.stdout.isTTY) return JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
-			if (this.file && this.file instanceof CastoeFile) return JSON.stringify(input, null, 1).replace(/"([^"]+)":/gm, '$1:');
+			if (process.stdout.isTTY) return util.inspect(input, true, input.size, false);
+			if (this.file && this.file instanceof CastoeFile) return util.inspect(input, true, input.size, false);
 		} else if (typeof input === 'string') {
 			if (process.stdout.isTTY) return input;
 			if (this.file && this.file instanceof CastoeFile) return input;
