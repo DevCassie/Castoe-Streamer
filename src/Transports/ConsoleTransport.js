@@ -176,9 +176,11 @@ module.exports = class CastoeConsole extends Transform {
 		const stackReg2 = /at\s+()(.*):(\d*):(\d*)/i;
 		const stackList = new Error().stack.split('\n').slice(3);
 		const s = stackList[this.stackIndex];
-		const sp = stackReg.exec(s) || stackReg2.exec(2);
-
+		let sp = stackReg.exec(s);
 		const data = {};
+		if (sp === null) {
+			sp = stackReg2.exec(s);
+		}
 
 		if (sp && sp.length === 5) {
 			data.method = sp[1];

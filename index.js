@@ -25,7 +25,8 @@ const promise = new Promise((resolve, reject) => {
 			xp: 1000
 		}
 	}
+	if (!object.level) reject('Error!');
 	resolve('Succes');	
-});
-
-promise.then(res => castoeConsole.debug(res, 'Info'));
+})
+	.then(res => castoeConsole.debug(res, 'Info'))
+	.catch(error => castoeConsole.debug(error, 'Error'));

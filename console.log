@@ -130,3 +130,265 @@
 
 [ undefined | Typeof String ] [Info]:  Succes
 
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ undefined | Instanceof Error ] [Range Error]:  Some error message
+
+[ undefined | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ undefined | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ no | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[  | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[  | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ File not found. | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ File not found. | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ File not found. | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ File not found. | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Info]:  Succes
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:33 | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:33 | Typeof String ] [Error]:  Error!
+
+[ index.js:35 | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:33 | Typeof String ] [Error]:  Error!
+
+[ index.js:35 | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:32 | Typeof String ] [Error]:  Error!
+
+[ index.js:13 | Instanceof Error ] [Range Error]:  Some error message
+
+[ index.js:14 | Typeof Object ] [REGEX]:  /w/
+
+[ index.js:31 | Typeof String ] [Info]:  Succes
+
