@@ -13,7 +13,7 @@ const regex = new RegExp('w');
 castoeConsole.error(error, 'Range Error');
 castoeConsole.debug(regex, 'REGEX');	
 
-const promise = new Promise((resolve, reject) => {
+new Promise((resolve, reject) => {
 	const object = {
 		user: {
 			userID: '123',
