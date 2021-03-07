@@ -24,13 +24,12 @@ CastoeConsole currently only contains two [Methods](#methods). However CastoeCon
 
 <br>
 
-## .send(*input, callback?*)
+## .send(*input*)
 > Writes the input to a console or terminal.
 >
 > | Parameter     | Type      |
 > |-------------  |---------  |
 > | input         | Any       |
-> | callback      | Function  |
 > <br>
 >
 > **Example:**
@@ -45,13 +44,12 @@ CastoeConsole currently only contains two [Methods](#methods). However CastoeCon
 
 <br>
 
-## .info(*input, callback?*)
+## .info(*input*)
 > Writes the input to a console or terminal with a cyan color.
 >
 > | Parameter     | Type      |
 > |-------------  |---------  |
 > | input         | Any       |
-> | callback      | Function  |
 > <br>
 >
 > **Example:**
@@ -64,14 +62,13 @@ CastoeConsole currently only contains two [Methods](#methods). However CastoeCon
 
 <br>
 
-## .debug(*input, referer, callback?*)
+## .debug(*input, referer*)
 > Writes the input to a console or terminal with a green color.
 >
 > | Parameter     | Type      |
 > |-------------  |---------  |
 > | input         | Any       |
 > | referer       | String    |
-> | callback      | Function  |
 > <br>
 >
 > **Example:**
@@ -84,14 +81,13 @@ CastoeConsole currently only contains two [Methods](#methods). However CastoeCon
 
 <br>
 
-## .warn(*input, callback?*)
+## .warn(*input*)
 > Writes the input to a console or terminal with a yellow color.
 >
 > | Parameter     | Type      |
 > |-------------  |---------  |
 > | input         | Any       |
 > | referer       | String    |
-> | callback      | Function  |
 > <br>
 >
 > **Example:**
@@ -104,14 +100,13 @@ CastoeConsole currently only contains two [Methods](#methods). However CastoeCon
 
 <br>
 
-## .error(*input, name, callback?*)
+## .error(*input, name*)
 > Writes the input to a console or terminal with a red color.
 >
 > | Parameter     | Type      |
 > |-------------  |---------  |
 > | input         | Any       |
 > | name          | String    |
-> | callback      | Function  |
 > <br>
 >
 > **Example:**
