@@ -1,13 +1,12 @@
 const os = require('os');
-const fs = require('fs');
-const zlib = require('zlib');
 const util = require('util');
 const path = require('path');
-const colog = require('colog');
+const chalk = require('chalk');
 const moment = require('moment');
+const figures = require('figures');
 const { Transform } = require('stream');
-
-const CastoeFile = require('./FileTransport.js');
+const types = require('./Config/Types.js');
+const { grey } = chalk;
 
 /**
  * @typedef CastoeConsoleOptions
@@ -15,23 +14,14 @@ const CastoeFile = require('./FileTransport.js');
  * @property {String?} [date=''] Format for the date.
  * @property {Boolean?} [traceFile=false] Wether or not the console should return the file it's called from.
  * @property {Boolean?} [showType=false] Should the output show which type the input is?
-
- */
-//  * @property {CastoeConsoleColorOptions?} [colors={}] Which colours should be what?
-
-/**
- * @typedef CastoeConsoleColorOptions
- * @property {String} [error='red'] Which color for the bigint type?
- * @property {String} [debug='green'] Which color for the boolean type?
- * @property {String} [info='blue'] Which color for the function type?
- * @property {String} [warn='yellow'] Which color for the number type?
- * @property {String} [send='white'] Which color for the object type?
+ * @property {Boolean?} [showBadge=true]
+ * @property {Boolean?} [showLevel=true]
  */
 
 /**
  * @type {Console}
  * @extends {Transform}
- * @example new Transports.Console({ traceFile: true, colors: {error: 'red', debug: 'green', info: 'blue', warn: 'yellow', send: 'white'}, date: 'LTS', showType: true });
+ * @example new castoeStreamer.CastoeConsole({ traceFile: true, colors: {error: 'red', debug: 'green', info: 'blue', warn: 'yellow', send: 'white'}, date: 'LTS', showType: true });
  * @returns {undefined}
  */
 module.exports = class CastoeConsole extends Transform {
@@ -42,12 +32,10 @@ module.exports = class CastoeConsole extends Transform {
 	 */
 	constructor(options) {
 		super(options);
-
-		this.options = options;
 		/**
 		 * @type {String}
 		 */
-		this.name = options.name;
+		this.name = options.name || '';
 		/**
 		 * @type {String}
 		 */
@@ -61,117 +49,30 @@ module.exports = class CastoeConsole extends Transform {
 		 */
 		this.showType = options.showType || false;
 		/**
-		 * @type {Object}
+		 * @type {Boolean}
 		 */
-		this.format = options.format;
+		this.showLevel = options.showLevel;
 		/**
-		 * @type {CastoeFile}
+		 * @type {Boolean}
 		 */
-		this.file = options.file;
-		this.stackIndex = options.stackIndex || 1;
+		this.showBadge = options.showBadge;
+		this._types = types;
+		this._generalLevel = this._validateLevel(options.level);
+		this.stackIndex = options.stackIndex || 3;
 		this.eol = options.eol || os.EOL;
-
 		this.setMaxListeners(30);
-		// /**
-		//  * @type {CastoeConsoleColorOptions} 
-		//  */
-		// this.colors = options.colors;
 
-		// if (this.colors) {
-		// 	if (options.colors.error && options.colors.info && options.colors.warn && options.colors.warn && options.colors.debug && options.colors.send) {
-		// 		this.colors = {
-		// 			error: options.colors.error,
-		// 			warn: options.colors.warn,
-		// 			debug: options.colors.debug,
-		// 			info: options.colors.info,
-		// 			send: options.colors.send
-		// 		}
-		// 	} else {
-		// 		throw new Error('options.colors needs to be an Object like this:\n{error: String, info: String, warn: String, debug: String, send: String}');
-		// 	}
-		// }
-		this.levels = {
-			0: 'send',
-			1: 'info',
-			2: 'debug',
-			3: 'warn',
-			4: 'error'
-		}
-
-		Object.values(this.levels).forEach(value => {
-			if (value === 'send') {
-				this[value] = function(info, callback) {
-					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
-					if (this.file && this.file instanceof CastoeFile) {
-						this.file.send(newInfo);
-						if (process.stdout.isTTY) return process.stdout.write(colog.white(newInfo), callback);
-					}
-					if (!this.file || !(this.file instanceof CastoeFile)) {
-						if (process.stdout.isTTY) return process.stdout.write(colog.white(newInfo), callback);
-					}
-				}
-			} else if (value === 'info') {
-				this[value] = function(info, callback) {
-					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
-					if (this.file && this.file instanceof CastoeFile) {
-						this.file.send(newInfo);
-						if (process.stdout.isTTY) return process.stdout.write(colog.cyan(newInfo), callback);
-					}
-					if (!this.file || !(this.file instanceof CastoeFile)) {
-						if (process.stdout.isTTY) return process.stdout.write(colog.cyan(newInfo), callback);
-					}
-				}	
-			} else if (value === 'debug') {
-				this[value] = function(info, name, callback) {
-					const newInfo = `${this._handleOptions(info, name)} ${this._handleInputTypes(info)}${this.eol}`;
-					if (this.file && this.file instanceof CastoeFile) {
-						this.file.send(newInfo);
-						if (process.stdout.isTTY) return process.stdout.write(colog.green(newInfo), callback);
-					}
-					if (!this.file || !(this.file instanceof CastoeFile)) {
-						if (process.stdout.isTTY) return process.stdout.write(colog.green(newInfo), callback);
-					}
-				}
-			} else if (value === 'warn') {
-				this[value] = function(info, callback) {
-					const newInfo = `${this._handleOptions(info)} ${this._handleInputTypes(info)}${this.eol}`;
-					if (this.file && this.file instanceof CastoeFile) {
-						this.file.send(newInfo);
-						if (process.stdout.isTTY) return process.stdout.write(colog.yellow(newInfo), callback);
-					}
-					if (!this.file || !(this.file instanceof CastoeFile)) {
-						if (process.stdout.isTTY) return process.stdout.write(colog.yellow(newInfo), callback);
-					}
-				}
-			} else if (value === 'error') {
-				this[value] = function(info, name, callback) {
-					const newInfo = `${this._handleOptions(info, name)} ${this._handleInputTypes(info)}${this.eol}`;
-					if (this.file && this.file instanceof CastoeFile) {
-						this.file.send(newInfo);
-						if (process.stdout.isTTY) return process.stdout.write(colog.red(newInfo), callback);
-					}
-					if (!this.file || !(this.file instanceof CastoeFile)) {
-						if (process.stdout.isTTY) return process.stdout.write(colog.red(newInfo), callback);
-					}
-				}
-			}
+		Object.keys(this._types).forEach(type => {
+			this[type] = this._logger.bind(this, type);
 		});
 	}
 
-	/**
-	 * Core clear function of the CastoeConsole
-	 * @returns {Promise<void>}
-	 */
-	clear() {
-		process.stdout.cursorTo(0,0);
-		process.stdout.clearLine(0);
-		process.stdout.clearScreenDown();	
+	_getNow() {
+		return Date.now();
 	}
 
-	/**
-	 * @private
-	 */
-	_getFileCall() {
+	// eslint-disable-next-line getter-return
+	_getFile() {
 		const stackReg = /at\s+(.*)\s+\((.*):(\d*):(\d*)\)/i;
 		const stackReg2 = /at\s+()(.*):(\d*):(\d*)/i;
 		const stackList = new Error().stack.split('\n').slice(3);
@@ -193,181 +94,131 @@ module.exports = class CastoeConsole extends Transform {
 		}
 	}
 
-	/**
-	 * Function to check for the input, to change the writeable states.
-	 * @param {undefined} input 
-	 * @returns {undefined}
-	 * @private
-	 */
-	_typeOfInput(input) {
-		if (input instanceof Error) {
-			if (process.stdout.isTTY) return 'Instanceof Error';
-			if (this.file && this.file instanceof CastoeFile) return 'Instanceof Error';
-		} 
-
-		if (typeof input === 'bigint') {
-			if (process.stdout.isTTY) return 'Typeof Bigint';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Bigint';
-		} else if (typeof input === 'boolean') {
-			if (process.stdout.isTTY) return 'Typeof Boolean';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Boolean';
-		} else if (typeof input === 'function') {
-			if (process.stdout.isTTY) return 'Typeof Function';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Function';
-		} else if (typeof input === 'number') {
-			if (process.stdout.isTTY) return 'Typeof Number';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Number';
-		} else if (typeof input === 'object') {
-			if (process.stdout.isTTY) return 'Typeof Object';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Object';
-		} else if (typeof input === 'string') {
-			if (process.stdout.isTTY) return 'Typeof String';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof String';
-		} else if (typeof input === 'symbol') {
-			if (process.stdout.isTTY) return 'Typeof Symbol';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Symbol';
-		} else if (typeof input === 'undefined') {
-			if (process.stdout.isTTY) return 'Typeof Undefined';
-			if (this.file && this.file instanceof CastoeFile) return 'Typeof Undefined';
-		} else {
-			if (process.stdout.isTTY) return undefined;
-			if (this.file && this.file instanceof CastoeFile) return 'undefined';
-		}
+	_getName() {
+		return this.name;
 	}
 
-	/**
-	 * Function to handle different types of inputs from the user.
-	 * @param {mixed} input 
-	 * @returns {undefined}
-	 * @private
-	 */
-	_handleInputTypes(input) {
-		if (input instanceof Error) {
-			if (process.stdout.isTTY) return input.message;
-			if (this.file && this.file instanceof CastoeFile) return input.message.toString();
-		} else if (input instanceof RegExp) {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return input;
-		}
-
-		if (typeof input === 'bigint') {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return input;
-		} else if (typeof input === 'boolean') {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return input;
-		} else if (typeof input === 'function') {
-			if (process.stdout.isTTY) return `function ${input.name}() { native code }`;
-			if (this.file && this.file instanceof CastoeFile) return `function ${input.name}() { native code }`;
-		} else if (typeof input === 'number') {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return input;
-		} else if (typeof input === 'object') {
-			const Objectarray = [];
-			Objectarray.push(input);
-			if (process.stdout.isTTY) return util.inspect(input, true, input.size, false);
-			if (this.file && this.file instanceof CastoeFile) return util.inspect(input, true, input.size, false);
-		} else if (typeof input === 'string') {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return input;
-		} else if (typeof input === 'symbol') {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return input;
-		} else if (typeof input === 'undefined') {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return 'undefined';
-		} else {
-			if (process.stdout.isTTY) return input;
-			if (this.file && this.file instanceof CastoeFile) return 'undefined';
-		}
+	_getLogLevels() {
+		return {
+			0: 'send',
+			1: 'info',
+			2: 'debug',
+			3: 'warn',
+			4: 'error'
+		};
 	}
 
-	/**
-	 * Basic option handler.
-	 * @param {Object} info 
-	 * @param {String?} name
-	 * @privates
-	 */
-	_handleOptions(info, name) {
-		if (name) {
-			if (this.name && this.date && this.showType === true && this.traceFile === true) {
-				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (this.name && this.date && this.showType === true && this.traceFile === false) {
-				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (this.name && this.date && this.showType === false && this.traceFile === true) {
-				return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ] [${name}]: `;
-			} else if (this.name && this.date && this.showType === false && this.traceFile === false) {
-				return `[ ${this.name} | ${moment(new Date()).format(this.date)} ] [${name}]: `;
-			} else if (this.name && !this.date && this.showType === true && this.traceFile === true) {
-				return `[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (this.name && !this.date && this.showType === false && this.traceFile === true) {
-				return `[ ${this.name} | ${this._getFileCall()} ] [${name}]: `;
-			} else if (this.name && !this.date && this.showType === true && this.traceFile === false) {
-				return `[ ${this.name} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (this.name && !this.date && this.showType === false && this.traceFile === false) {
-				return `[ ${this.name} ] [${name}]: `;
-			} else if (this.name) {
-				return `[ ${this.name} ] [${name}]: `;
-			} else if (!this.name && this.date && this.showType === true && this.traceFile === false) {
-				return `[${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (!this.name && this.date && this.showType === false && this.traceFile === true) {
-				return `[ ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ] [${name}]: `;
-			} else if (!this.name && this.date && this.showType === false && this.traceFile === false) {
-				return `[ ${moment(new Date()).format(this.date)} ] [${name}]: `;
-			} else if (!this.name && !this.date && this.showType === true && this.traceFile === true) {
-				return `[ ${this._getFileCall()} | ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (!this.name && !this.date && this.showType === false && this.traceFile === true) {
-				return `[ ${this._getFileCall()} ] [${name}]: `;
-			} else if (!this.name && !this.date && this.showType === true && this.traceFile === false) {
-				return `[ ${this._typeOfInput(info)} ] [${name}]: `;
-			} else if (!this.name && !this.date && this.showType === false && this.traceFile === false) {
-				return `[${name}]: `;
+	_formatStream(stream) {
+		return this._transformToArray(stream);	
+	}
+
+	_formatDate() {
+		return `[${moment(this._getNow()).format(this.date)}]`	
+	}
+
+	_formatFileName() {
+		return `[${this._getFile()}]`;	
+	}
+
+	_formatName() {
+		return `[${this._getName()}]`;
+	}
+
+	_formatMessage(string) {
+		return util.formatWithOptions({ colors: true, showHidden: false, depth: string.length }, ...this._transformToArray(string));
+	}
+
+	_meta() {
+		const meta = [];
+
+		if (this.name) meta.push(this._formatName());
+		if (this.traceFile && this.traceFile === true) meta.push(this._formatFileName());
+		if (this.date) meta.push(this._formatDate());
+
+		if (meta.length !== 0) {
+			meta.push(`${figures.pointerSmall}`);
+			return meta.map(item => grey(item));
+		}
+
+		return meta;
+	}
+
+	_hasAdditional({suffix, prefix}, args) {
+		return (suffix || prefix) ? '' : this._formatMessage(args);
+	}
+
+	_buildConsole(type, ...args) {
+		let [msg, additional] = [{}, {}];
+		if (args.length === 1 && typeof (args[0]) === 'object' && args[0] !== null) {
+			if (args[0] instanceof Error) {
+				[msg] = args;
 			} else {
-				return `[${name}]: `
+				const [{prefix, message, suffix}] = args;
+				additional = Object.assign({}, {suffix, prefix});
+				msg = message ? this._formatMessage(message) : this._hasAdditional(additional, args);
 			}
+		} else {
+			msg = this._formatMessage(args);
 		}
 
-		if (this.name && this.date && this.showType === true && this.traceFile === true) {
-			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]`;
-		} else if (this.name && this.date && this.showType === true && this.traceFile === false) {
-			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]`;
-		} else if (this.name && this.date && this.showType === false && this.traceFile === true) {
-			return `[ ${this.name} | ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]`;
-		} else if (this.name && this.date && this.showType === false && this.traceFile === false) {
-			return `[ ${this.name} | ${moment(new Date()).format(this.date)} ]`;
-		} else if (this.name && !this.date && this.showType === true && this.traceFile === true) {
-			return `[ ${this.name} | ${this._getFileCall()} | ${this._typeOfInput(info)} ]`;
-		} else if (this.name && !this.date && this.showType === false && this.traceFile === true) {
-			return `[ ${this.name} | ${this._getFileCall()} ]`;
-		} else if (this.name && !this.date && this.showType === true && this.traceFile === false) {
-			return `[ ${this.name} | ${this._typeOfInput(info)} ]`;
-		} else if (this.name && !this.date && this.showType === false && this.traceFile === false) {
-			return `[ ${this.name} ]`;
-		} else if (!this.name && this.date && this.showType === true && this.traceFile === false) {
-			return `[ ${moment(new Date()).format(this.date)} | ${this._typeOfInput(info)} ]`;
-		} else if (!this.name && this.date && this.showType === false && this.traceFile === true) {
-			return `[ ${moment(new Date()).format(this.date)} | ${this._getFileCall()} ]`;
-		} else if (!this.name && this.date && this.showType === false && this.traceFile === false) {
-			return `[ ${moment(new Date()).format(this.date)} ]`;
-		} else if (!this.name && !this.date && this.showType === true && this.traceFile === true) {
-			return `[ ${this._getFileCall()} | ${this._typeOfInput(info)} ]`;
-		} else if (!this.name && !this.date && this.showType === false && this.traceFile === true) {
-			return `[ ${this._getFileCall()} ]`;
-		} else if (!this.name && !this.date && this.showType === true && this.traceFile === false) {
-			return `[ ${this._typeOfInput(info)} ]`;
-		} else if (!this.name && !this.date && this.showType === false && this.traceFile === false) {
-			return '';
-		}
+		const meta = this._meta();
+		if (additional.prefix) meta.push(additional.prefix);
+		if (this.showBadge === true && type.figure) meta.push(chalk[type.color](this._padEnd(type.figure, type.figure.length + 1)));
+		if (this.showLevel === true && type.label) meta.push(chalk[type.color](this._padEnd(type.label, type.label.length + 1)));
+		if (msg && msg !== null) meta.push(msg);
+		if (additional.suffix) meta.push(additional.suffix);
+		return meta.join(' ');
 	}
 
-	createGzip() {
-		const gzip = zlib.createGzip();
-		if (!this.file) throw new Error('File doesn\'t exists.');
-		const readFile = fs.createReadStream(this.file.file);
-		const writeFile = fs.createWriteStream(`${this.file.file}.gz`);
-		if (!readFile) {
-			throw new Error('File does not exists.');		
+	_validateLevel(level) {
+		return Object.keys(this._getLogLevels()).includes(level) ? level : 'send';
+	}
+
+	_transformToArray(input) {
+		return Array.isArray(input) ? input : [input];
+	}
+
+	_write(stream, message) {
+		if (!stream) throw new Error('Stream must be given.');
+		if (stream !== process.stdout) throw new Error('Stream must be off process.stdout.');
+		stream.write(`${message}${this.eol}`);
+	}
+
+	_log(message, stream = process.stdout, level) {
+		if (this._getLogLevels[level] == this._getLogLevels[this._generalLevel]) {
+			this._write(stream, message);
+		}	
+	}
+
+	/**
+	 * Core clear function of the CastoeConsole
+	 * @returns {Promise<void>}
+	 */
+	clear() {
+		process.stdout.cursorTo(0,0);
+		process.stdout.clearLine(0);
+		process.stdout.clearScreenDown();	
+	}
+
+	_logger(type, ...messageObject) {
+		const { stream, level } = this._types[type];
+		const message = this._buildConsole(this._types[type], ...messageObject);
+		this._log(message, stream, this._validateLevel(level));
+	}
+
+	_padEnd(string, targetLength) {
+		string = String(string);
+		targetLength = parseInt(targetLength, 10) || 0;
+
+		if (string.length >= targetLength) {
+			return string;
 		}
-		return readFile.pipe(gzip).pipe(writeFile);
+
+		if (String.prototype.padEnd) {
+			return string.padEnd(targetLength);
+		}
+
+		targetLength -= string.length;
+		return string + ' '.repeat(targetLength);
 	}
 }
