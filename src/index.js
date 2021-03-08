@@ -28,4 +28,16 @@ module.exports.author = require('../package.json').author;
 /**
  * @type {Function}
  */
-module.exports.Functions = require('./Functions/index');
+module.exports.Clear = require('./Functions/index').Clear;
+/**
+ * @type {Function}
+ */
+module.exports.Clone = require('./Functions/index').Clone;
+/**
+ * @type {Function}
+ */
+module.exports.Delete = require('./Functions/index').Delete;
+/**
+ * @type {Function}
+ */
+module.exports.Rename = require('./Functions/index').Rename;
