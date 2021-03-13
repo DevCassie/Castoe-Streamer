@@ -33,5 +33,5 @@ declare namespace castoestreamer {
   }
 }
 
-declare const castoestreamer: castoestreamer.Functions;
+declare const castoestreamer: castoestreamer;
 export = castoestreamer;
