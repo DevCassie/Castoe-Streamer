@@ -2,9 +2,10 @@ const castoeStreamer = require('./src/index.js');
 
 const castoeConsole = new castoeStreamer.CastoeConsole({
 	name: 'Maverick',
-	traceFile: true,
+	traceFile: false,
 	showLevel: true,
-	showBadge: true
+	showBadge: true,
+	date: 'LT'
 });
 castoeConsole.info({
 	userID: 1,
@@ -12,7 +13,3 @@ castoeConsole.info({
 	bot: true,
 	notes: 'Maverick is going to be amazing.'
 });
-
-setTimeout(() => {
-	castoeStreamer.Functions.Clear(process.stdout);
-}, 10000);

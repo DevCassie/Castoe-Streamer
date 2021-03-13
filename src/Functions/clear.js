@@ -7,6 +7,8 @@ const { Stream } = require('stream');
  * @returns {Promise<void>}
  */
 module.exports = function Clear(stream) {
+	if (stream !== process.stdout) throw new Error('Stream must be process.stdout');
+
 	try {
 		if (stream === process.stdout) {
 			process.stdout.cursorTo(0,0);
