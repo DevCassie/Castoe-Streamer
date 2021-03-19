@@ -128,6 +128,10 @@ module.exports = class CastoeConsole extends Transform {
 		return util.formatWithOptions({ colors: true, showHidden: false, depth: string.length }, ...this._transformToArray(string));
 	}
 
+	_formatReferer(referer) {
+		return `[${referer}]:`;	
+	}
+
 	_meta() {
 		const meta = [];
 
@@ -148,6 +152,7 @@ module.exports = class CastoeConsole extends Transform {
 	}
 
 	_buildConsole(type, ...args) {
+		const meta = this._meta();
 		let [msg, additional] = [{}, {}];
 		if (args.length === 1 && typeof (args[0]) === 'object' && args[0] !== null) {
 			if (args[0] instanceof Error) {
@@ -161,7 +166,6 @@ module.exports = class CastoeConsole extends Transform {
 			msg = this._formatMessage(args);
 		}
 
-		const meta = this._meta();
 		if (additional.prefix) meta.push(additional.prefix);
 		if (this.showBadge === true && type.figure) meta.push(chalk[type.color](this._padEnd(type.figure, type.figure.length + 1)));
 		if (this.showLevel === true && type.label) meta.push(chalk[type.color](this._padEnd(type.label, type.label.length + 1)));
