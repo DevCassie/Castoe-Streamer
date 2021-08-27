@@ -1,0 +1,48 @@
+{
+  "name": "castoe-streamer",
+  "version": "2.0.1",
+  "description": "Castoe Streamer is a package that allows customizability and easy to use data transport between streams. ",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo Test script is working!",
+    "start": "node .",
+    "lint": "eslint ."
+  },
+  "author": "Cas Martens",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/DevCassie/Castoe-Streamer",
+    "type": "public"
+  },
+  "keywords": [
+    "stream",
+    "castoe",
+    "castoe streamer",
+    "castoe-streamer",
+    "data stream",
+    "stream handler",
+    "logger",
+    "tools",
+    "logger",
+    "console",
+    "transport",
+    "transports",
+    "data transport"
+  ],
+  "dependencies": {
+    "async-series": "0.0.1",
+    "chalk": "^4.1.0",
+    "colog": "^1.0.4",
+    "figures": "^3.2.0",
+    "is-stream": "^2.0.0",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.20",
+    "babel": "^6.23.0",
+    "eslint": "^7.17.0",
+    "nodemon": "^2.0.4",
+    "stream": "0.0.2"
+  }
+}

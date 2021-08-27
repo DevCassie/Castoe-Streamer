@@ -1,0 +1,6 @@
+node_modules/
+.env
+BackupScripts/*
+Backups/*
+test.json
+test.txt
