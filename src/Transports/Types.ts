@@ -6,6 +6,8 @@ export interface CastoeConsoleOptions {
 	date?: string;
 	traceFile?: boolean;
 	showType?: boolean;
+  showBadge?: boolean;
+  showLevel?: boolean;
 }
 	
 // export interface CastoeConsoleColorOptions {

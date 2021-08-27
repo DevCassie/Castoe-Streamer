@@ -5,6 +5,12 @@ const jsonFile = new castoeStreamer.CastoeFile({
     automatic: true,
     overwrite: false
 });
+const castoeLogger = new castoeStreamer.CastoeConsole({
+    traceFile: true,
+    name: 'Castoe Console',
+    showtype: true,
+    showBadge: true
+});
 
 const data = {
     user: {
@@ -14,4 +20,4 @@ const data = {
     }
 }
 
-jsonFile.send(data);
+castoeLogger.debug('DATA DEBUG', data,);

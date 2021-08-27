@@ -9,9 +9,9 @@ declare namespace castoestreamer {
     new(options?: Options.CastoeConsoleOptions): CastoeConsole;
     send(input: any): CastoeConsole;
     info(input: any): CastoeConsole;
-    debug(input: any, referer: string): CastoeConsole;
+    debug(input: any): CastoeConsole;
     warn(input: any): CastoeConsole;
-    error(input: any, name: string): CastoeConsole;
+    error(input: any): CastoeConsole;
     clear(): CastoeConsole;
     createGzip(): CastoeConsole;
   }

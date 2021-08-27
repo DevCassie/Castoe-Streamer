@@ -1,6 +1,6 @@
 {
   "name": "castoe-streamer",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "Castoe Streamer is a package that allows customizability and easy to use data transport between streams. ",
   "main": "./src/index.js",
   "scripts": {
@@ -31,13 +31,9 @@
   ],
   "dependencies": {
     "async-series": "0.0.1",
-<<<<<<< HEAD
     "chalk": "^4.1.0",
     "colog": "^1.0.4",
     "figures": "^3.2.0",
-=======
-    "colog": "^1.0.4",
->>>>>>> d395547d918a433aad43d5623b38ea94d8431cc0
     "is-stream": "^2.0.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.0"
