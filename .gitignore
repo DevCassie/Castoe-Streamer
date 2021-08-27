@@ -4,3 +4,8 @@ BackupScripts/*
 Backups/*
 test.json
 test.txt
+*.json
+*node_modules/*
+*Backups/*
+./src/Transports/_BackupFileTransport.js
+*BackupScripts/*

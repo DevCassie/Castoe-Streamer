@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const fs = require('fs');
 const os = require('os');
 const util = require('util');
@@ -8,6 +9,18 @@ const figures = require('figures');
 const { Transform } = require('stream');
 const types = require('./Config/Types.js');
 const { grey } = chalk;
+=======
+const os = require('os');
+const fs = require('fs');
+const zlib = require('zlib');
+const util = require('util');
+const path = require('path');
+const colog = require('colog');
+const moment = require('moment');
+const { Transform } = require('stream');
+
+const CastoeFile = require('./FileTransport.js');
+>>>>>>> d395547d918a433aad43d5623b38ea94d8431cc0
 
 /**
  * @typedef CastoeConsoleOptions
@@ -15,14 +28,32 @@ const { grey } = chalk;
  * @property {String?} [date=''] Format for the date.
  * @property {Boolean?} [traceFile=false] Wether or not the console should return the file it's called from.
  * @property {Boolean?} [showType=false] Should the output show which type the input is?
+<<<<<<< HEAD
  * @property {Boolean?} [showBadge=true]
  * @property {Boolean?} [showLevel=true]
+=======
+
+ */
+//  * @property {CastoeConsoleColorOptions?} [colors={}] Which colours should be what?
+
+/**
+ * @typedef CastoeConsoleColorOptions
+ * @property {String} [error='red'] Which color for the bigint type?
+ * @property {String} [debug='green'] Which color for the boolean type?
+ * @property {String} [info='blue'] Which color for the function type?
+ * @property {String} [warn='yellow'] Which color for the number type?
+ * @property {String} [send='white'] Which color for the object type?
+>>>>>>> d395547d918a433aad43d5623b38ea94d8431cc0
  */
 
 /**
  * @type {Console}
  * @extends {Transform}
+<<<<<<< HEAD
  * @example new castoeStreamer.CastoeConsole({ traceFile: true, colors: {error: 'red', debug: 'green', info: 'blue', warn: 'yellow', send: 'white'}, date: 'LTS', showType: true });
+=======
+ * @example new Transports.Console({ traceFile: true, colors: {error: 'red', debug: 'green', info: 'blue', warn: 'yellow', send: 'white'}, date: 'LTS', showType: true });
+>>>>>>> d395547d918a433aad43d5623b38ea94d8431cc0
  * @returns {undefined}
  */
 module.exports = class CastoeConsole extends Transform {
