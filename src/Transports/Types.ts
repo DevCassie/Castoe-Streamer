@@ -21,7 +21,7 @@ export interface CastoeConsoleOptions {
 // }
 
 export interface CastoeFileOptions {
-  file: string;
+  file: Array<String> | string;
   dirname?: string;
   automatic?: boolean;
   overwrite?: boolean;

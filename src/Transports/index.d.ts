@@ -17,7 +17,7 @@ declare namespace castoestreamer {
   }
   
   interface CastoeFile extends Transport {
-    file: string;
+    file: Array<String> | string;
     dirname?: string;
     automatic?: boolean;
     overwrite?: boolean;

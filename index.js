@@ -12,12 +12,10 @@ const castoeLogger = new castoeStreamer.CastoeConsole({
     showBadge: true
 });
 
-const data = {
-    user: {
-        name: 'Cassie',
-        age: 19,
-        id: 1
-    }
-}
+const castoeFile = new castoeStreamer.CastoeFile({
+    file: 'test.txt',
+    overwrite: false,
+    automatic: true
+});
 
-castoeLogger.debug('DATA DEBUG', data,);
+castoeFile.send('Testing 123');
