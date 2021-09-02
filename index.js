@@ -5,13 +5,17 @@ const jsonFile = new castoeStreamer.CastoeFile({
     automatic: true,
     overwrite: false
 });
+const castoeLogger = new castoeStreamer.CastoeConsole({
+    traceFile: true,
+    name: 'Castoe Console',
+    showtype: true,
+    showBadge: true
+});
 
-const data = {
-    user: {
-        name: 'Cassie',
-        age: 19,
-        id: 1
-    }
-}
+const castoeFile = new castoeStreamer.CastoeFile({
+    file: 'test.txt',
+    overwrite: false,
+    automatic: true
+});
 
-jsonFile.send(data);
+castoeFile.send('Testing 123');

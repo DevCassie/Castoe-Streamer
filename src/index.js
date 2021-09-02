@@ -2,13 +2,10 @@
 const CastoeFile = require('./Transports/FileTransport.js');
 const CastoeStream = require('./Transports/StreamTransport.js');
 const CastoeConsole = require('./Transports/ConsoleTransport.js');
-<<<<<<< HEAD
 const Clear = require('./Functions/clear');
 const Clone = require('./Functions/Clone');
 const Rename = require('./Functions/Rename.js');
 const Delete = require('./Functions/Delete');
-=======
->>>>>>> d395547d918a433aad43d5623b38ea94d8431cc0
 
 /**
  * @type {CastoeFile}

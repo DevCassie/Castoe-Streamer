@@ -8,7 +8,7 @@ const path = require('path');
 
 /**
  * @typedef CastoeFileOptions
- * @property {String?} [file]
+ * @property {Array<String> | String} [file]
  * @property {String?} [dirname]
  * @property {Boolean?} [automatic]
  * @property {Boolean?} [overwrite]
@@ -61,22 +61,22 @@ module.exports = class CastoeFile extends Transform {
 
 	/**
 	 * Method to send data to the file.
-	 * @param {String} any 
+	 * @param {String} input
 	 */
-	send(input) {
-		const outputStream = this._createStream();
-		if (this.file.endsWith('.json') && typeof input === "object") {
+	async send(input) {
+		let outputStream = this._createStream();
+		if (!Array.isArray(this.file) && this.file.endsWith('.json') && typeof input === "object") {
 			input = JSON.stringify(input);
 		}
-		outputStream.writeStream.write(`${input}\n`);
+		await outputStream.writeStream.write(`${input}\n`);
 
-		outputStream.writeStream
+		await outputStream.writeStream
 			.on('error', (error) => console.error(error))
 			.on('close', () => console.log('Filestream closed.'))
-			.on('open', () => {
+			.on('open', async () => {
 				const target = this._getFile();
 				if (this.automatic === true) {
-					this._automatedBackup(target);
+					await this._automatedBackup(target);
 				}
 			});
 	}
@@ -88,7 +88,8 @@ module.exports = class CastoeFile extends Transform {
 	 */
 	read(callback = () => {}) {
 		const chunks = [];
-		const stream = this._createStream();
+		let stream = this._createStream();
+
 		stream.readStream
 			.on('data', (buffer) => {
 				chunks.push(buffer);
@@ -139,7 +140,7 @@ module.exports = class CastoeFile extends Transform {
 	 * @returns {Transform}
 	 */
 	_createStream() {
-		const fullpath = path.join(this.dirname, this.file);
+		let fullpath = path.join(this.dirname, this.file);
 		const stream = Transform;
 		stream.writeStream = fs.createWriteStream(fullpath, this.options);
 		if (fullpath) {
@@ -155,7 +156,7 @@ module.exports = class CastoeFile extends Transform {
 	 * @private
 	 */
 	_getFile() {
-		const ext = path.extname(this.file);
+		let ext = path.extname(this.file);
 		const basename = path.basename(this._basename, ext);
 		const target = `${basename}${ext}`;
 		return target;
@@ -167,40 +168,35 @@ module.exports = class CastoeFile extends Transform {
 	 * @private
 	 */
 	_createDirIfNotExists(dirPath) {
-		if (!fs.existsSync(dirPath)) {
-			fs.mkdirSync(dirPath, { recursive: true });
-			return true;
-		}
+			if (!fs.existsSync(dirPath)) {
+				fs.mkdirSync(dirPath, { recursive: true });
+			} else {
+				return 'File already exists.';
+			}
 	}
 
 	/**
 	 * Private method to include automated backups if turned on.
 	 * @private
 	 */
-	_automatedBackup(file) {
+	async _automatedBackup(file) {
 		const fullpath = path.join(this.dirname, file);
-		let newFileLocation;
 
-		fs.access(fullpath, async (error) => {
+		fs.access(fullpath, (error) => {
 			if (error) return console.error(`Error while creating a new backup.\n${fullpath}`);
 
+			const newPath = path.join('Backups/');
+			this._createDirIfNotExists(newPath);
 
-			const backupPath = path.join('./Backups');
-			if (!fs.existsSync(backupPath)) {
-				const initiated = await this._createDirIfNotExists(backupPath);
-				if (initiated) {
-					newFileLocation = `${backupPath}/Backup_${file}`;
-				}
-			}
-			
+			let newFileLocation = `${newPath}Backup_${file}`;
 			if (!fs.existsSync(newFileLocation)) {
 				if (this.overwrite === true) {
 					fs.copyFileSync(fullpath, newFileLocation);
 				} else {
-					fs.readdir(backupPath, (error, files) => {
+					fs.readdir(newPath, (error, files) => {
 						if (error) throw new Error;
 						for (let i = 0; i < files.length; i++) {
-							newFileLocation = `${backupPath}/${i}_Backup_${file}`;
+							newFileLocation = `${newPath}${i}_Backup_${file}`;
 
 							fs.copyFileSync(file, newFileLocation);
 						}
@@ -210,10 +206,10 @@ module.exports = class CastoeFile extends Transform {
 				if (this.overwrite === true) {
 					fs.copyFileSync(file, newFileLocation);
 				} else {
-					fs.readdir(backupPath, (error, files) => {
+					fs.readdir(newPath, (error, files) => {
 						if (error) throw new Error;
 						for (let i = 0; i < files.length; i++) {
-							newFileLocation = `${backupPath}/${i}_Backup_${file}`;
+							newFileLocation = `${newPath}${i}_Backup_${file}`;
 
 							fs.copyFileSync(file, newFileLocation);
 						}
